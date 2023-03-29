@@ -10,7 +10,7 @@
   "licensesUrl": "https://www.pixygon.io/dev/passport/license",
   "dependencies": {
     "com.pixygon.saving": "0.5.0",
-    "com.pixygon.NFT": "0.5.0"
+    "com.pixygon.nft": "0.5.0"
  },
 "hideInEditor": false,
  "keywords": [
