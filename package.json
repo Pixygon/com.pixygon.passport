@@ -1,0 +1,26 @@
+{
+  "name": "com.pixygon.passport",
+  "version": "0.5.0",
+  "displayName": "Pixygon - Passport",
+  "description": "Login system for Pixygon Accounts",
+  "unity": "2022.2",
+  "unityRelease": "12f1",
+  "documentationUrl": "https://www.pixygon.io/dev/passport",
+  "changelogUrl": "https://www.pixygon.io/dev/passport/changelog",
+  "licensesUrl": "https://www.pixygon.io/dev/passport/license",
+  "dependencies": {
+    "com.pixygon.saving": "0.5.0",
+    "com.pixygon.NFT": "0.5.0"
+ },
+"hideInEditor": false,
+ "keywords": [
+    "Pixygon",
+    "Passport",
+    "Account"
+  ],
+  "author": {
+    "name": "Pixygon",
+    "email": "pixygon@pixygon.io",
+    "url": "https://www.pixygon.io"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Pixygon.Passport",
+    "rootNamespace": "Pixygon.Passport",
+    "references": [
+        "GUID:323e85dd21ee607419af907390562a9c",
+        "GUID:d512ac687b5c5c74aa73385d2385bc31"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
