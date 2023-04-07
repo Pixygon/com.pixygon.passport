@@ -8,6 +8,7 @@ namespace Pixygon.Passport {
     public class PixygonApi : MonoBehaviour {
         private const string PixygonServerURL = "https://pixygon-server.onrender.com/";
         public bool IsLoggedIn { get; private set; }
+        public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
         private async void Start() {
             if (PlayerPrefs.GetInt("RememberMe") != 1) return;
@@ -88,13 +89,16 @@ namespace Pixygon.Passport {
             await PostWWW($"savedata/{savedata._id}", JsonUtility.ToJson(new Savejson(savedata.savejson)), true, AccountData.token);
         }
         private async Task<LoginToken> LogIn(string user, string pass, Action<string> onFail = null) {
+            IsLoggingIn = true;
             var www = await PostWWW("auth/login", JsonUtility.ToJson(new LoginData(user, pass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                IsLoggingIn = false;
                 return null;
             }
             IsLoggedIn = true;
+            IsLoggingIn = false;
             Debug.Log("Logged in: " + www.downloadHandler.text);
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
