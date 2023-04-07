@@ -10,8 +10,9 @@ namespace Pixygon.Passport {
         public bool IsLoggedIn { get; private set; }
         public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
-        private async void Start() {
+        private async void Awake() {
             if (PlayerPrefs.GetInt("RememberMe") != 1) return;
+            IsLoggingIn = true;
             AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
             if (AccountData == null) return;
             SaveManager.SettingsSave._user = AccountData.user;
