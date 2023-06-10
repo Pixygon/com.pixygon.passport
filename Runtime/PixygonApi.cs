@@ -61,6 +61,11 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/tez/{wallet}", "", true, AccountData.token);
             Debug.Log("TezWallet Patch: " + www.downloadHandler.text);
         }
+        public async void PatchMaticWallet(string wallet) {
+            Debug.Log("Patching matic-wallet");
+            var www = await PostWWW($"users/{AccountData.user._id}/matic/{wallet}", "", true, AccountData.token);
+            Debug.Log("MaticWallet Patch: " + www.downloadHandler.text);
+        }
         public void StartLogout() {
             PlayerPrefs.DeleteKey("RememberMe");
             PlayerPrefs.DeleteKey("Username");
