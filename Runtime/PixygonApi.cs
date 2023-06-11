@@ -95,6 +95,7 @@ namespace Pixygon.Passport {
             await PostWWW($"savedata/{savedata._id}", JsonUtility.ToJson(new Savejson(savedata.savejson)), true, AccountData.token);
         }
         private async Task<LoginToken> LogIn(string user, string pass, Action<string> onFail = null) {
+            Debug.Log("Starting login!!");
             IsLoggingIn = true;
             var www = await PostWWW("auth/login", JsonUtility.ToJson(new LoginData(user, pass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
