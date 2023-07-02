@@ -97,7 +97,7 @@ namespace Pixygon.Passport {
         }
         public async Task<string> FollowUser(string followId)
         {
-            var www = await GetWWW($"users/{AccountData.user._id}/{followId}");
+            var www = await GetWWW($"users/{AccountData.user._id}/{followId}", AccountData.token);
             if (!string.IsNullOrWhiteSpace(www.error))
             {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
