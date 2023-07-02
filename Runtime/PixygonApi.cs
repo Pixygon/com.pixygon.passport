@@ -72,11 +72,16 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
-        public async void PatchBioWallet(string bio)
-        {
+        public async void PatchBio(string bio) {
             Debug.Log("Patching bio");
             var www = await PostWWW($"users/{AccountData.user._id}/editbio/{bio}", "", true, AccountData.token);
             Debug.Log("Bio Patch: " + www.downloadHandler.text);
+        }
+        public async void PatchPicturePath(string picturePath)
+        {
+            Debug.Log("Patching bio");
+            var www = await PostWWW($"users/{AccountData.user._id}/editpicturepath/{picturePath}", "", true, AccountData.token);
+            Debug.Log("PicturePath Patch: " + www.downloadHandler.text);
         }
 
 
