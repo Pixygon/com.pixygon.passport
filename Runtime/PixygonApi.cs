@@ -61,11 +61,61 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/tez/{wallet}", "", true, AccountData.token);
             Debug.Log("TezWallet Patch: " + www.downloadHandler.text);
         }
-        public async void PatchMaticWallet(string wallet) {
+        public async void PatchMatWallet(string wallet) {
             Debug.Log("Patching matic-wallet");
-            var www = await PostWWW($"users/{AccountData.user._id}/matic/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/{AccountData.user._id}/mat/{wallet}", "", true, AccountData.token);
             Debug.Log("MaticWallet Patch: " + www.downloadHandler.text);
         }
+        public async void PatchImxWallet(string wallet)
+        {
+            Debug.Log("Patching matic-wallet");
+            var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
+            Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
+        }
+
+
+        public async Task<AccountData> GetUser(string userId) {
+            var www = await GetWWW($"users/view/{userId}");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
+            return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
+        }
+
+        public async Task<string> UserSearch(string searchString) {
+            var www = await GetWWW("users/s/" + searchString);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("GET USER SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+        public async Task<string> CollectionSearch(string searchString)
+        {
+            var www = await GetWWW("users/s/" + searchString);
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET COLLECTION SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+
+        public async Task<string> NftSearch(string searchString)
+        {
+            var www = await GetWWW("users/s/" + searchString);
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET NFT SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+
         public void StartLogout() {
             PlayerPrefs.DeleteKey("RememberMe");
             PlayerPrefs.DeleteKey("Username");
