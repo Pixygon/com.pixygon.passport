@@ -95,11 +95,9 @@ namespace Pixygon.Passport {
             if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
-        public async Task<string> FollowUser(string followId)
-        {
-            var www = await GetWWW($"users/{AccountData.user._id}/{followId}", AccountData.token);
-            if (!string.IsNullOrWhiteSpace(www.error))
-            {
+        public async Task<string> FollowUser(string followId) {
+            var www = await PostWWW($"users/{AccountData.user._id}/{followId}", "", true, AccountData.token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
