@@ -72,6 +72,12 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
+        public async void PatchBioWallet(string bio)
+        {
+            Debug.Log("Patching bio");
+            var www = await PostWWW($"users/{AccountData.user._id}/editbio/{bio}", "", true, AccountData.token);
+            Debug.Log("Bio Patch: " + www.downloadHandler.text);
+        }
 
 
         public async Task<AccountData> GetUser(string userId) {
@@ -84,7 +90,42 @@ namespace Pixygon.Passport {
             if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
+        public async Task<string> FollowUser(string userId, string followId)
+        {
+            var www = await GetWWW($"users/{userId}/{followId}");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+        public async Task<string> GetFollowing(string userId)
+        {
+            var www = await GetWWW("users/" + userId + "/following");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+        public async Task<string> GetFollowers(string userId)
+        {
+            var www = await GetWWW("users/" + userId + "/followers");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET FOLLOWERS ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
 
+
+        //SEARCH
         public async Task<string> UserSearch(string searchString) {
             var www = await GetWWW("users/s/" + searchString);
             if (!string.IsNullOrWhiteSpace(www.error)) {
@@ -104,7 +145,6 @@ namespace Pixygon.Passport {
             }
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
-
         public async Task<string> NftSearch(string searchString)
         {
             var www = await GetWWW("users/s/" + searchString);
@@ -115,6 +155,9 @@ namespace Pixygon.Passport {
             }
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
+
+
+
 
         public void StartLogout() {
             PlayerPrefs.DeleteKey("RememberMe");
