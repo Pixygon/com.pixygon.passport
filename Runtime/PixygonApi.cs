@@ -83,6 +83,12 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/editpicturepath/{picturePath}", "", true, AccountData.token);
             Debug.Log("PicturePath Patch: " + www.downloadHandler.text);
         }
+        public async void PatchProfile(string bio, string picturePath)
+        {
+            Debug.Log("Patching profile");
+            var www = await PostWWW($"users/{AccountData.user._id}/editprofile/{bio}/{picturePath}", "", true, AccountData.token);
+            Debug.Log("Profile Patch: " + www.downloadHandler.text);
+        }
 
 
         public async Task<AccountData> GetUser(string userId) {
