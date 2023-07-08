@@ -111,7 +111,7 @@ namespace Pixygon.Passport {
         }
         public async Task<string> GetFollowing(string userId)
         {
-            var www = await GetWWW("users/" + userId + "/following");
+            var www = await GetWWW($"users/{userId}/following");
             if (!string.IsNullOrWhiteSpace(www.error))
             {
                 Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
@@ -122,7 +122,7 @@ namespace Pixygon.Passport {
         }
         public async Task<string> GetFollowers(string userId)
         {
-            var www = await GetWWW("users/" + userId + "/followers");
+            var www = await GetWWW($"users/{userId}/followers");
             if (!string.IsNullOrWhiteSpace(www.error))
             {
                 Debug.Log("GET FOLLOWERS ERROR!! " + www.error + " and this " + www.downloadHandler.text);
