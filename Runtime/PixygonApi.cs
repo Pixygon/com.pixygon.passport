@@ -243,12 +243,16 @@ namespace Pixygon.Passport {
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
         private async Task<LoginToken> Signup(string user, string email, string pass, Action<string> onFail = null) {
-            //var www = await PostWWW("auth/register", JsonUtility.ToJson(new SignupData(user, email, pass)));
-            var www = await PostWWW("auth/register", JsonConvert.SerializeObject(new Dictionary<string, string>() {
+            var www = await PostWWW("auth/register", JsonUtility.ToJson(new SignupData(user, email, pass)));
+            var stringTest = JsonConvert.SerializeObject(new Dictionary<string, string>() {
                 { "user", user },
                 { "email", email },
                 { "pass", pass }
-            } ));
+            });
+            Debug.Log(stringTest);
+            /*
+            var www = await PostWWW("auth/register", stringTest);
+            */
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
