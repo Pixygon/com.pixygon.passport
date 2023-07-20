@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pixygon.Saving;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -45,6 +47,36 @@ namespace Pixygon.Passport {
                 SaveManager.SettingsSave._isLoggedIn = true;
             }
             onSignup?.Invoke();
+        }
+        public async void VerifyUser(string user, int code, Action onVerify = null, Action<string> onFail = null) {
+            var www = await PostWWW("auth/verify", JsonUtility.ToJson(new VerifyData(user, code)));
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                return;
+            }
+            Debug.Log("Verified user: " + www.downloadHandler.text);
+            onVerify?.Invoke();
+        }
+        public async void ForgotPassword(string email, Action onVerify = null, Action<string> onFail = null) {
+            var www = await PostWWW("auth/forgotPassword", JsonUtility.ToJson(new RecoveryData(email)));
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                return;
+            }
+            Debug.Log("Forgot password: " + www.downloadHandler.text);
+            onVerify?.Invoke();
+        }
+        public async void ForgotPasswordRecovery(string email, string hash, string newPass, Action onVerify = null, Action<string> onFail = null) {
+            var www = await PostWWW("auth/forgotPasswordRecovery", JsonUtility.ToJson(new RecoverySubmitData(email, hash, newPass)));
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                return;
+            }
+            Debug.Log("Recovered Password: " + www.downloadHandler.text);
+            onVerify?.Invoke();
         }
         public async void PatchWaxWallet(string wallet) {
             var www = await PostWWW($"users/{AccountData.user._id}/wax/{wallet}", "", true, AccountData.token);
@@ -211,7 +243,12 @@ namespace Pixygon.Passport {
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
         private async Task<LoginToken> Signup(string user, string email, string pass, Action<string> onFail = null) {
-            var www = await PostWWW("auth/register", JsonUtility.ToJson(new SignupData(user, email, pass)));
+            //var www = await PostWWW("auth/register", JsonUtility.ToJson(new SignupData(user, email, pass)));
+            var www = await PostWWW("auth/register", JsonConvert.SerializeObject(new Dictionary<string, string>() {
+                { "user", user },
+                { "email", email },
+                { "pass", pass }
+            } ));
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
@@ -221,7 +258,6 @@ namespace Pixygon.Passport {
             Debug.Log("Signed in: " + www.downloadHandler.text);
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
-
         public async void GetUsers() {
             await GetWWW("Users");
         }
@@ -290,6 +326,33 @@ namespace Pixygon.Passport {
             userName = user;
             this.email = email;
             password = pass;
+        }
+    }
+    [Serializable]
+    public class VerifyData {
+        public string userName;
+        public int verificationCode;
+        public VerifyData(string user, int code) {
+            userName = user;
+            verificationCode = code;
+        }
+    }
+    [Serializable]
+    public class RecoveryData {
+        public string email;
+        public RecoveryData(string email) {
+            this.email = email;
+        }
+    }
+    [Serializable]
+    public class RecoverySubmitData {
+        public string email;
+        public string hash;
+        public string newPass;
+        public RecoverySubmitData(string email, string hash, string newPass) {
+            this.email = email;
+            this.hash = hash;
+            this.newPass = newPass;
         }
     }
 
