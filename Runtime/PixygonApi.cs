@@ -227,19 +227,18 @@ namespace Pixygon.Passport {
         public async void PatchSave(Savedata savedata) {
             await PostWWW($"savedata/{savedata._id}", JsonUtility.ToJson(new Savejson(savedata.savejson)), true, AccountData.token);
         }
-        private async Task<LoginToken> LogIn(string user, string pass, Action<string> onFail = null) {
-            Debug.Log("Starting login!!");
+        private async Task<LoginToken> LogIn(string user, string pass, Action<ErrorResponse> onFail = null) {
             IsLoggingIn = true;
             var www = await PostWWW("auth/login", JsonUtility.ToJson(new LoginData(user, pass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                //Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
                 IsLoggingIn = false;
                 return null;
             }
             IsLoggedIn = true;
             IsLoggingIn = false;
-            Debug.Log("Logged in: " + www.downloadHandler.text);
+            //Debug.Log("Logged in: " + www.downloadHandler.text);
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
         private async Task<LoginToken> Signup(string user, string email, string pass, Action<string> onFail = null) {
