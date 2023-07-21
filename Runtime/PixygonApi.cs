@@ -20,7 +20,7 @@ namespace Pixygon.Passport {
             SaveManager.SettingsSave._user = AccountData.user;
             SaveManager.SettingsSave._isLoggedIn = true;
         }
-        public async void StartLogin(string user, string pass, bool rememberMe = false, Action onLogin = null, Action<string> onFail = null) {
+        public async void StartLogin(string user, string pass, bool rememberMe = false, Action onLogin = null, Action<ErrorResponse> onFail = null) {
             if (rememberMe) {
                 PlayerPrefs.SetInt("RememberMe", 1);
                 PlayerPrefs.SetString("Username", user);
