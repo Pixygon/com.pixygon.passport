@@ -34,7 +34,7 @@ namespace Pixygon.Passport {
             }
             onLogin?.Invoke();
         }
-        public async void StartSignup(string user, string email, string pass, bool rememberMe = false, Action onSignup = null, Action<string> onFail = null) {
+        public async void StartSignup(string user, string email, string pass, bool rememberMe = false, Action onSignup = null, Action<ErrorResponse> onFail = null) {
             if (rememberMe) {
                 PlayerPrefs.SetInt("RememberMe", 1);
                 PlayerPrefs.SetString("Username", user);
@@ -48,34 +48,28 @@ namespace Pixygon.Passport {
             }
             onSignup?.Invoke();
         }
-        public async void VerifyUser(string user, int code, Action onVerify = null, Action<string> onFail = null) {
+        public async void VerifyUser(string user, int code, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/verify", JsonUtility.ToJson(new VerifyData(user, code)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
                 return;
             }
-            Debug.Log("Verified user: " + www.downloadHandler.text);
             onVerify?.Invoke();
         }
-        public async void ForgotPassword(string email, Action onVerify = null, Action<string> onFail = null) {
+        public async void ForgotPassword(string email, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/forgotPassword", JsonUtility.ToJson(new RecoveryData(email)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
                 return;
             }
-            Debug.Log("Forgot password: " + www.downloadHandler.text);
             onVerify?.Invoke();
         }
-        public async void ForgotPasswordRecovery(string email, string hash, string newPass, Action onVerify = null, Action<string> onFail = null) {
+        public async void ForgotPasswordRecovery(string email, string hash, string newPass, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/forgotPasswordRecovery", JsonUtility.ToJson(new RecoverySubmitData(email, hash, newPass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
                 return;
             }
-            Debug.Log("Recovered Password: " + www.downloadHandler.text);
             onVerify?.Invoke();
         }
         public async void PatchWaxWallet(string wallet) {
@@ -231,34 +225,21 @@ namespace Pixygon.Passport {
             IsLoggingIn = true;
             var www = await PostWWW("auth/login", JsonUtility.ToJson(new LoginData(user, pass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                //Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
                 IsLoggingIn = false;
                 return null;
             }
             IsLoggedIn = true;
             IsLoggingIn = false;
-            //Debug.Log("Logged in: " + www.downloadHandler.text);
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
-        private async Task<LoginToken> Signup(string user, string email, string pass, Action<string> onFail = null) {
+        private async Task<LoginToken> Signup(string user, string email, string pass, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/register", JsonUtility.ToJson(new SignupData(user, email, pass)));
-            var stringTest = JsonConvert.SerializeObject(new Dictionary<string, string>() {
-                { "user", user },
-                { "email", email },
-                { "pass", pass }
-            });
-            Debug.Log(stringTest);
-            /*
-            var www = await PostWWW("auth/register", stringTest);
-            */
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                onFail?.Invoke($"{www.error}\n{www.downloadHandler.text}");
+                onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
                 return null;
             }
             IsLoggedIn = true;
-            Debug.Log("Signed in: " + www.downloadHandler.text);
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
         public async void GetUsers() {
