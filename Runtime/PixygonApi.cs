@@ -257,7 +257,8 @@ namespace Pixygon.Passport {
             Debug.Log($"Feedback: {www.downloadHandler.text}");
         }
         public async void SetAsPfp(string chain,string hash, Action<ErrorResponse> onFail = null) {
-            var www = await PostWWW("users/setpfp", JsonUtility.ToJson(new PfpData(AccountData.user._id, chain, hash)));
+            Debug.Log("On set pfp!");
+            var www = await PostWWW($"users/{AccountData.user._id}/setPfp", JsonUtility.ToJson(new PfpData(chain, hash)));
             if (string.IsNullOrWhiteSpace(www.error)) return;
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
