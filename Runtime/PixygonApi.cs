@@ -256,6 +256,30 @@ namespace Pixygon.Passport {
             var www = await PostWWW("client/feedbacks", JsonUtility.ToJson(feedback));
             Debug.Log($"Feedback: {www.downloadHandler.text}");
         }
+        public async void SetAsPfp(string chain,string hash, Action<ErrorResponse> onFail = null) {
+            var www = await PostWWW("users/setpfp", JsonUtility.ToJson(new PfpData(AccountData.user._id, chain, hash)));
+            if (string.IsNullOrWhiteSpace(www.error)) return;
+            onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
+        }
+        public async Task<string> LoveCollection(string collectionName) {
+            var www = await PostWWW($"users/{AccountData.user._id}/loveWaxCollection/{collectionName}", "", true, AccountData.token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+        public async Task<string> GetLovedCollections(string userId) {
+            var www = await GetWWW($"users/{userId}/lovedWaxCollections");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
 
         private async static Task<UnityWebRequest> GetWWW(string path, string token = "") {
             var www = UnityWebRequest.Get(PixygonServerURL + path);
@@ -279,8 +303,8 @@ namespace Pixygon.Passport {
                 await Task.Yield();
             return www;
         }
-    }
 
+    }
     [Serializable]
     public class Savejson {
         public string savejson;
@@ -288,64 +312,11 @@ namespace Pixygon.Passport {
             savejson = s;
         }
     }
-
-    [Serializable]
-    public class LoginData {
-        public string userName;
-        public string password;
-
-        public LoginData(string user, string pass) {
-            userName = user;
-            password = pass;
-        }
-    }
-
-    [Serializable]
-    public class SignupData {
-        public string userName;
-        public string email;
-        public string password;
-
-        public SignupData(string user, string email, string pass) {
-            userName = user;
-            this.email = email;
-            password = pass;
-        }
-    }
-    [Serializable]
-    public class VerifyData {
-        public string userName;
-        public int verificationCode;
-        public VerifyData(string user, int code) {
-            userName = user;
-            verificationCode = code;
-        }
-    }
-    [Serializable]
-    public class RecoveryData {
-        public string email;
-        public RecoveryData(string email) {
-            this.email = email;
-        }
-    }
-    [Serializable]
-    public class RecoverySubmitData {
-        public string email;
-        public string hash;
-        public string newPass;
-        public RecoverySubmitData(string email, string hash, string newPass) {
-            this.email = email;
-            this.hash = hash;
-            this.newPass = newPass;
-        }
-    }
-
     [Serializable]
     public class LoginToken {
         public AccountData user;
         public string token;
     }
-
     [Serializable]
     public class Feedback {
         public string gameId;
@@ -358,7 +329,6 @@ namespace Pixygon.Passport {
         public float coordinateZ;
         public string area;
     }
-
     [Serializable]
     public class Savedata {
         public string _id;
@@ -367,7 +337,6 @@ namespace Pixygon.Passport {
         public int slot;
         public string savejson;
     }
-
     [Serializable]
     public class HighScore {
         public string gameId;
