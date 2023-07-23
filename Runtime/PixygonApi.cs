@@ -162,12 +162,9 @@ namespace Pixygon.Passport {
         //SEARCH
         public async Task<string> UserSearch(string searchString) {
             var www = await GetWWW("users/s/" + searchString);
-            if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("GET USER SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                return null;
-            }
-            Debug.Log(www.downloadHandler.text);
-            return "{\"_results\":" + www.downloadHandler.text + "}";
+            if (string.IsNullOrWhiteSpace(www.error)) return "{\"_results\":" + www.downloadHandler.text + "}";
+            Debug.Log("GET USER SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+            return null;
         }
         public async Task<string> CollectionSearch(string searchString)
         {
