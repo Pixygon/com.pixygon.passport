@@ -264,7 +264,7 @@ namespace Pixygon.Passport {
         }
         public async void SetProfile(string bio, string displayName, string[] links, Action<ErrorResponse> onFail = null) {
             Debug.Log("Patching profile");
-            var www = await PostWWW($"users/{AccountData.user._id}/editprofile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
+            var www = await PostWWW($"users/{AccountData.user._id}/setProfile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
 
