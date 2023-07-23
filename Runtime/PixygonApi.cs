@@ -98,22 +98,6 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
-        public async void PatchBio(string bio) {
-            Debug.Log("Patching bio");
-            var www = await PostWWW($"users/{AccountData.user._id}/editbio/{bio}", "", true, AccountData.token);
-            Debug.Log("Bio Patch: " + www.downloadHandler.text);
-        }
-        public async void PatchPicturePath(string picturePath)
-        {
-            Debug.Log("Patching bio");
-            var www = await PostWWW($"users/{AccountData.user._id}/editpicturepath/{picturePath}", "", true, AccountData.token);
-            Debug.Log("PicturePath Patch: " + www.downloadHandler.text);
-        }
-        public async void PatchProfile(string bio, string picturePath, string[] links) {
-            Debug.Log("Patching profile");
-            var www = await PostWWW($"users/{AccountData.user._id}/editprofile/{bio}/{picturePath}/{links[0]}", "", true, AccountData.token);
-            Debug.Log("Profile Patch: " + www.downloadHandler.text);
-        }
 
 
         public async Task<AccountData> GetUser(string userId) {
@@ -278,6 +262,11 @@ namespace Pixygon.Passport {
             Debug.Log(www.downloadHandler.text);
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
+        public async void SetProfile(string bio, string displayName, string[] links, Action<ErrorResponse> onFail = null) {
+            Debug.Log("Patching profile");
+            var www = await PostWWW($"users/{AccountData.user._id}/editprofile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
+            onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
+        }
 
         private async static Task<UnityWebRequest> GetWWW(string path, string token = "") {
             var www = UnityWebRequest.Get(PixygonServerURL + path);
@@ -346,6 +335,19 @@ namespace Pixygon.Passport {
             this.userId = userId;
             this.score = score;
             this.detail = detail;
+        }
+    }
+
+    [Serializable]
+    public class ProfileData {
+        public string bio;
+        public string displayName;
+        public string[] links;
+
+        public ProfileData(string bio, string displayName, string[] links) {
+            this.bio = bio;
+            this.displayName = displayName;
+            this.links = links;
         }
     }
 }
