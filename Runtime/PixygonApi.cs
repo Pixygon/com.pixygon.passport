@@ -116,7 +116,7 @@ namespace Pixygon.Passport {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
-            Debug.Log(www.downloadHandler.text);
+            await RefreshUser();
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
         public async Task<string> GetFollowing(string userId)
@@ -249,7 +249,7 @@ namespace Pixygon.Passport {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
-            Debug.Log(www.downloadHandler.text);
+            await RefreshUser();
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
         public async Task<string> GetLovedCollections(string userId) {
@@ -289,6 +289,10 @@ namespace Pixygon.Passport {
             while (!www.isDone)
                 await Task.Yield();
             return www;
+        }
+
+        private async Task RefreshUser() {
+            AccountData.user = await GetUser(AccountData.user._id);
         }
 
     }
