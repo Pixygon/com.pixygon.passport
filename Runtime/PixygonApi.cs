@@ -291,6 +291,7 @@ namespace Pixygon.Passport {
 
         private async Task RefreshUser() {
             AccountData.user = await GetUser(AccountData.user._id);
+            SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
     }
