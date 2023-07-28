@@ -263,6 +263,7 @@ namespace Pixygon.Passport {
         public async void SetProfile(string bio, string displayName, string[] links, Action<ErrorResponse> onFail = null) {
             Debug.Log("Patching profile");
             var www = await PostWWW($"users/{AccountData.user._id}/setProfile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
+            await RefreshUser();
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
 
@@ -289,7 +290,7 @@ namespace Pixygon.Passport {
             return www;
         }
 
-        private async Task RefreshUser() {
+        public async Task RefreshUser() {
             AccountData.user = await GetUser(AccountData.user._id);
             SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
