@@ -90,9 +90,8 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/mat/{wallet}", "", true, AccountData.token);
             Debug.Log("MaticWallet Patch: " + www.downloadHandler.text);
         }
-        public async void PatchImxWallet(string wallet)
-        {
-            Debug.Log("Patching matic-wallet");
+        public async void PatchImxWallet(string wallet) {
+            Debug.Log("Patching imx-wallet");
             var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
@@ -100,8 +99,7 @@ namespace Pixygon.Passport {
 
         public async Task<AccountData> GetUser(string userId) {
             var www = await GetWWW($"users/view/{userId}");
-            if (!string.IsNullOrWhiteSpace(www.error))
-            {
+            if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
@@ -117,22 +115,18 @@ namespace Pixygon.Passport {
             await RefreshUser();
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
-        public async Task<string> GetFollowing(string userId)
-        {
+        public async Task<string> GetFollowing(string userId) {
             var www = await GetWWW($"users/{userId}/following");
-            if (!string.IsNullOrWhiteSpace(www.error))
-            {
+            if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
             Debug.Log(www.downloadHandler.text);
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
-        public async Task<string> GetFollowers(string userId)
-        {
+        public async Task<string> GetFollowers(string userId) {
             var www = await GetWWW($"users/{userId}/followers");
-            if (!string.IsNullOrWhiteSpace(www.error))
-            {
+            if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET FOLLOWERS ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
@@ -148,15 +142,11 @@ namespace Pixygon.Passport {
             Debug.Log("GET USER SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
             return null;
         }
-        public async Task<string> CollectionSearch(string searchString)
-        {
+        public async Task<string> CollectionSearch(string searchString) {
             var www = await GetWWW("users/s/" + searchString);
-            if (!string.IsNullOrWhiteSpace(www.error))
-            {
-                Debug.Log("GET COLLECTION SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
-                return null;
-            }
-            return "{\"_results\":" + www.downloadHandler.text + "}";
+            if (string.IsNullOrWhiteSpace(www.error)) return "{\"_results\":" + www.downloadHandler.text + "}";
+            Debug.Log("GET COLLECTION SEARCH ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+            return null;
         }
         public async Task<string> NftSearch(string searchString)
         {
@@ -244,7 +234,7 @@ namespace Pixygon.Passport {
         public async Task<string> LoveCollection(string collectionName) {
             var www = await PostWWW($"users/{AccountData.user._id}/loveWaxCollection/{collectionName}", "", true, AccountData.token);
             if (!string.IsNullOrWhiteSpace(www.error)) {
-                Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                Debug.Log("FOLLOW COLLECTION ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
             await RefreshUser();
@@ -293,6 +283,7 @@ namespace Pixygon.Passport {
         public async Task RefreshUser() {
             AccountData.user = await GetUser(AccountData.user._id);
             SaveManager.SettingsSave._user = AccountData.user;
+            Debug.Log("Refreshed user!!");
             //SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
