@@ -223,7 +223,7 @@ namespace Pixygon.Passport {
             return www.downloadHandler.text;
         }
         public async void PostHighScore(string game, string user, int score, int kills, float time, string detail) {
-            var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, score, detail)));
+            var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, score, kills, time, detail)));
             Debug.Log($"highScore: {www.downloadHandler.text}");
         }
         public async void PostFeedback(Feedback feedback) {
