@@ -331,14 +331,14 @@ namespace Pixygon.Passport {
         public string userId;
         public int score;
         public int kills;
-        public float time;
+        public int time;
         public string detail;
         public HighScore(string gameId, string userId, int score, int kills, float time, string detail) {
             this.gameId = gameId;
             this.userId = userId;
             this.score = score;
             this.kills = kills;
-            this.time = time;
+            this.time = Mathf.FloorToInt(time);
             this.detail = detail;
         }
     }
