@@ -222,7 +222,7 @@ namespace Pixygon.Passport {
             Debug.Log($"highScore: {www.downloadHandler.text}");
             return www.downloadHandler.text;
         }
-        public async void PostHighScore(string game, string user, int score, string detail) {
+        public async void PostHighScore(string game, string user, int score, int kills, float time, string detail) {
             var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, score, detail)));
             Debug.Log($"highScore: {www.downloadHandler.text}");
         }
@@ -330,11 +330,15 @@ namespace Pixygon.Passport {
         public string gameId;
         public string userId;
         public int score;
+        public int kills;
+        public float time;
         public string detail;
-        public HighScore(string gameId, string userId, int score, string detail) {
+        public HighScore(string gameId, string userId, int score, int kills, float time, string detail) {
             this.gameId = gameId;
             this.userId = userId;
             this.score = score;
+            this.kills = kills;
+            this.time = time;
             this.detail = detail;
         }
     }
