@@ -220,7 +220,7 @@ namespace Pixygon.Passport {
         public async Task<string> GetHighScores(string gameId, string scoretype, DateTime fromDate, DateTime toDate) {
             var www = await GetWWW($"client/highscores/{gameId}/{scoretype}"); ///{fromDate}/{toDate}");
             Debug.Log($"highScore: {www.downloadHandler.text}");
-            return "{ highscores: " + www.downloadHandler.text + "}";
+            return www.downloadHandler.text;
         }
         public async void PostHighScore(string game, string user, int score, int kills, float time, string detail) {
             var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, score, kills, time, detail)));
