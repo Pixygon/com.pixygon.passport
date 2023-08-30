@@ -335,9 +335,9 @@ namespace Pixygon.Passport {
         public int time;
         public string detail;
         public string version;
-        public float multiplierPercent;
+        public int multiplierPercent;
 
-        public HighScore(string gameId, string userId, string userName, int score, int kills, float time, string detail, string version, float multiplierPercent) {
+        public HighScore(string gameId, string userId, string userName, int score, int kills, float time, string detail, string version, int multiplierPercent) {
             this.gameId = gameId;
             this.userId = userId;
             this.userName = userName;
