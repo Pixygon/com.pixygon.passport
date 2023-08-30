@@ -217,13 +217,13 @@ namespace Pixygon.Passport {
         public async void GetFeedback() {
             await GetWWW("client/feedbacks");
         }
-        public async Task<string> GetHighScores(string gameId, string scoretype, DateTime fromDate, DateTime toDate) {
-            var www = await GetWWW($"client/highscores/{gameId}/{scoretype}"); ///{fromDate}/{toDate}");
+        public async Task<string> GetHighScores(string gameId, string scoretype, string version, DateTime fromDate, DateTime toDate) {
+            var www = await GetWWW($"client/highscores/{gameId}/{scoretype}/{version}"); ///{fromDate}/{toDate}");
             Debug.Log($"highScore: {www.downloadHandler.text}");
             return www.downloadHandler.text;
         }
-        public async void PostHighScore(string game, string user, int score, int kills, float time, string detail) {
-            var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, "", score, kills, time, detail)));
+        public async void PostHighScore(string game, string user, int score, int kills, float time, string detail, string version = "1.0.0", int multiplierPercent = 100) {
+            var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, "", score, kills, time, detail, version, multiplierPercent)));
             Debug.Log($"highScore: {www.downloadHandler.text}");
         }
         public async void PostFeedback(Feedback feedback) {
@@ -334,7 +334,10 @@ namespace Pixygon.Passport {
         public int kills;
         public int time;
         public string detail;
-        public HighScore(string gameId, string userId, string userName, int score, int kills, float time, string detail) {
+        public string version;
+        public float multiplierPercent;
+
+        public HighScore(string gameId, string userId, string userName, int score, int kills, float time, string detail, string version, float multiplierPercent) {
             this.gameId = gameId;
             this.userId = userId;
             this.userName = userName;
@@ -342,6 +345,8 @@ namespace Pixygon.Passport {
             this.kills = kills;
             this.time = Mathf.FloorToInt(time);
             this.detail = detail;
+            this.version = version;
+            this.multiplierPercent = multiplierPercent;
         }
     }
 
