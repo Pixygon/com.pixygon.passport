@@ -218,12 +218,12 @@ namespace Pixygon.Passport {
             await GetWWW("client/feedbacks");
         }
         public async Task<string> GetHighScores(string gameId, string scoretype, string version, DateTime fromDate, DateTime toDate) {
-            var www = await GetWWW($"client/highscores/{gameId}/{scoretype}/{version}"); ///{fromDate}/{toDate}");
+            var www = await GetWWW($"highscores/{gameId}/{scoretype}/{version}"); ///{fromDate}/{toDate}");
             Debug.Log($"highScore: {www.downloadHandler.text}");
             return www.downloadHandler.text;
         }
         public async void PostHighScore(string game, string user, int score, int kills, float time, string detail, string version = "1.0.0", int multiplierPercent = 100) {
-            var www = await PostWWW("client/highscores", JsonUtility.ToJson(new HighScore(game, user, "", score, kills, time, detail, version, multiplierPercent)));
+            var www = await PostWWW("highscores", JsonUtility.ToJson(new HighScore(game, user, "", score, kills, time, detail, version, multiplierPercent)));
             Debug.Log($"highScore: {www.downloadHandler.text}");
         }
         public async void PostFeedback(Feedback feedback) {
