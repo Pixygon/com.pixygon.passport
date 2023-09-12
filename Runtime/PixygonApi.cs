@@ -219,7 +219,7 @@ namespace Pixygon.Passport {
         }
         public static async Task<string> GetHighScores(string gameId, string scoretype, string version, string fromDate, string toDate) {
             var www = await GetWWW($"highscores/{gameId}/{scoretype}/{version}/{fromDate}/{toDate}");
-            Debug.Log($"highscores/{gameId}/{scoretype}/{version}/{fromDate}/{toDate}" + www.error + www.downloadHandler.text);
+            Debug.Log(www.url + www.error + www.downloadHandler.text);
             return www.downloadHandler.text;
         }
         public static async void PostHighScore(string score) {
