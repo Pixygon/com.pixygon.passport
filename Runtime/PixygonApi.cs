@@ -217,13 +217,13 @@ namespace Pixygon.Passport {
         public async void GetFeedback() {
             await GetWWW("client/feedbacks");
         }
-        public async Task<string> GetHighScores(string gameId, string scoretype, string version, DateTime fromDate, DateTime toDate) {
+        public static async Task<string> GetHighScores(string gameId, string scoretype, string version, DateTime fromDate, DateTime toDate) {
             var www = await GetWWW($"highscores/{gameId}/{scoretype}/{version}"); ///{fromDate}/{toDate}");
             Debug.Log($"highScore: {www.downloadHandler.text}");
             return www.downloadHandler.text;
         }
-        public async void PostHighScore(string game, string user, int score, int kills, float time, string detail, string version = "1.0.0", int multiplierPercent = 100) {
-            var www = await PostWWW("highscores", JsonUtility.ToJson(new HighScore(game, user, "", score, kills, time, detail, version, multiplierPercent)));
+        public static async void PostHighScore(string score) {
+            var www = await PostWWW("highscores", score);
             Debug.Log($"highScore: {www.downloadHandler.text}");
         }
         public async void PostFeedback(Feedback feedback) {
@@ -324,30 +324,6 @@ namespace Pixygon.Passport {
         public string userId;
         public int slot;
         public string savejson;
-    }
-    [Serializable]
-    public class HighScore {
-        public string gameId;
-        public string userId;
-        public string userName;
-        public int score;
-        public int kills;
-        public int time;
-        public string detail;
-        public string version;
-        public int multiplierPercent;
-
-        public HighScore(string gameId, string userId, string userName, int score, int kills, float time, string detail, string version, int multiplierPercent) {
-            this.gameId = gameId;
-            this.userId = userId;
-            this.userName = userName;
-            this.score = score;
-            this.kills = kills;
-            this.time = Mathf.FloorToInt(time);
-            this.detail = detail;
-            this.version = version;
-            this.multiplierPercent = multiplierPercent;
-        }
     }
 
     [Serializable]
