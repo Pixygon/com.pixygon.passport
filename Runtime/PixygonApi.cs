@@ -218,7 +218,8 @@ namespace Pixygon.Passport {
             await GetWWW("client/feedbacks");
         }
         public static async Task<string> GetHighScores(string gameId, string scoretype, string version, string fromDate, string toDate) {
-            var www = await GetWWW($"highscores/{gameId}/{scoretype}/{version}"); ///{fromDate}/{toDate}");
+            var www = await GetWWW($"highscores/{gameId}/{scoretype}/{version}/{fromDate}/{toDate}"); ///{fromDate}/{toDate}");
+            Debug.Log(www.error + www.downloadHandler.text);
             return www.downloadHandler.text;
         }
         public static async void PostHighScore(string score) {
