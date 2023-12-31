@@ -96,10 +96,14 @@ namespace Pixygon.Passport {
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
 
-        public async void DeleteUser() {
+        public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
             Debug.Log("Deleting user!");
             var www = await GetWWW($"users/delete/{AccountData.user._id}", AccountData.token);
-            Debug.Log("Delete user status: " + www.downloadHandler.text);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
+                return;
+            }
+            onVerify?.Invoke();
         }
 
 
