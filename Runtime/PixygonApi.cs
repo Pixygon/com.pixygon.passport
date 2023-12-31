@@ -103,6 +103,14 @@ namespace Pixygon.Passport {
                 onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
                 return;
             }
+            PlayerPrefs.DeleteKey("RememberMe");
+            PlayerPrefs.DeleteKey("Username");
+            PlayerPrefs.DeleteKey("Password");
+            PlayerPrefs.Save();
+            SaveManager.SettingsSave._user = null;
+            SaveManager.SettingsSave._isLoggedIn = false;
+            AccountData = null;
+            IsLoggedIn = false;
             onVerify?.Invoke();
         }
 
