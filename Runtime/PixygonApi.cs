@@ -97,12 +97,6 @@ namespace Pixygon.Passport {
         }
 
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
-            Debug.Log("Deleting user!");
-            var www = await GetWWW($"users/delete/{AccountData.user._id}", AccountData.token);
-            if (!string.IsNullOrWhiteSpace(www.error)) {
-                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
-                return;
-            }
             PlayerPrefs.DeleteKey("RememberMe");
             PlayerPrefs.DeleteKey("Username");
             PlayerPrefs.DeleteKey("Password");
@@ -111,6 +105,11 @@ namespace Pixygon.Passport {
             SaveManager.SettingsSave._isLoggedIn = false;
             AccountData = null;
             IsLoggedIn = false;
+            var www = await GetWWW($"users/delete", AccountData.token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
+                return;
+            }
             onVerify?.Invoke();
         }
 
