@@ -95,6 +95,16 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
+        public async void PatchTwitchAccount(string twitchAccount) {
+            Debug.Log("Patching twitch-account");
+            var www = await PostWWW($"users/twitch/{twitchAccount}", "", true, AccountData.token);
+            Debug.Log("Twitch-account Patch: " + www.downloadHandler.text);
+        }
+        public async void PatchDreadwagerSkin(int i) {
+            Debug.Log("Patching Dreadwager Skin");
+            var www = await PostWWW($"users/addDreadwagerSkin/{i}", "", true, AccountData.token);
+            Debug.Log("Dreadwager Skin Patch: " + www.downloadHandler.text);
+        }
 
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
             PlayerPrefs.DeleteKey("RememberMe");
@@ -116,6 +126,15 @@ namespace Pixygon.Passport {
 
         public async Task<AccountData> GetUser(string userId) {
             var www = await GetWWW($"users/view/{userId}");
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
+            return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
+        }
+        public async Task<AccountData> GetUserFromTwitch(string twitchId) {
+            var www = await GetWWW($"users/twitch/{twitchId}");
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
