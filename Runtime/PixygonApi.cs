@@ -97,12 +97,12 @@ namespace Pixygon.Passport {
         }
         public async void PatchTwitchAccount(string twitchAccount) {
             Debug.Log("Patching twitch-account");
-            var www = await PostWWW($"users/twitch/{twitchAccount}", "", true, AccountData.token);
+            var www = await PostWWW($"users/{twitchAccount}/twitch", "", true, AccountData.token);
             Debug.Log("Twitch-account Patch: " + www.downloadHandler.text);
         }
         public async void PatchDreadwagerSkin(int i) {
             Debug.Log("Patching Dreadwager Skin");
-            var www = await PostWWW($"users/addDreadwagerSkin/{i}", "", true, AccountData.token);
+            var www = await PostWWW($"users/{i}/addDreadwagerSkin", "", true, AccountData.token);
             Debug.Log("Dreadwager Skin Patch: " + www.downloadHandler.text);
         }
 
