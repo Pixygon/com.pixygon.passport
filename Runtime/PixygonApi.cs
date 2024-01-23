@@ -71,38 +71,38 @@ namespace Pixygon.Passport {
             onVerify?.Invoke();
         }
         public async void PatchWaxWallet(string wallet) {
-            var www = await PostWWW($"users/{AccountData.user._id}/wax/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/wax/{wallet}", "", true, AccountData.token);
             AccountData.user = JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
             SaveManager.SettingsSave._user = AccountData.user;
         }
         public async void PatchEthWallet(string wallet) {
             Debug.Log("Patching eth-wallet");
-            var www = await PostWWW($"users/{AccountData.user._id}/eth/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/eth/{wallet}", "", true, AccountData.token);
             Debug.Log("EthWallet Patch: " + www.downloadHandler.text);
         }
         public async void PatchTezWallet(string wallet) {
             Debug.Log("Patching tez-wallet");
-            var www = await PostWWW($"users/{AccountData.user._id}/tez/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/tez/{wallet}", "", true, AccountData.token);
             Debug.Log("TezWallet Patch: " + www.downloadHandler.text);
         }
         public async void PatchMatWallet(string wallet) {
             Debug.Log("Patching matic-wallet");
-            var www = await PostWWW($"users/{AccountData.user._id}/mat/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/mat/{wallet}", "", true, AccountData.token);
             Debug.Log("MaticWallet Patch: " + www.downloadHandler.text);
         }
         public async void PatchImxWallet(string wallet) {
             Debug.Log("Patching imx-wallet");
-            var www = await PostWWW($"users/{AccountData.user._id}/imx/{wallet}", "", true, AccountData.token);
+            var www = await PostWWW($"users/imx/{wallet}", "", true, AccountData.token);
             Debug.Log("ImxWallet Patch: " + www.downloadHandler.text);
         }
         public async void PatchTwitchAccount(string twitchAccount) {
             Debug.Log("Patching twitch-account");
-            var www = await PostWWW($"users/{twitchAccount}/twitch", "", true, AccountData.token);
+            var www = await PostWWW($"users/twitch/{twitchAccount}", "", true, AccountData.token);
             Debug.Log("Twitch-account Patch: " + www.downloadHandler.text);
         }
         public async void PatchDreadwagerSkin(int i) {
             Debug.Log("Patching Dreadwager Skin");
-            var www = await PostWWW($"users/{i}/addDreadwagerSkin", "", true, AccountData.token);
+            var www = await PostWWW($"users/addDreadwagerSkin/{i}", "", true, AccountData.token);
             Debug.Log("Dreadwager Skin Patch: " + www.downloadHandler.text);
         }
 
@@ -143,7 +143,7 @@ namespace Pixygon.Passport {
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
         public async Task<string> FollowUser(string followId) {
-            var www = await PostWWW($"users/{AccountData.user._id}/{followId}", "", true, AccountData.token);
+            var www = await PostWWW($"users/{followId}", "", true, AccountData.token);
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
@@ -267,12 +267,12 @@ namespace Pixygon.Passport {
         }
         public async void SetAsPfp(string chain,string hash, Action<ErrorResponse> onFail = null) {
             Debug.Log("On set pfp!");
-            var www = await PostWWW($"users/{AccountData.user._id}/setPfp", JsonUtility.ToJson(new PfpData(chain, hash)), false, AccountData.token);
+            var www = await PostWWW($"users/setPfp", JsonUtility.ToJson(new PfpData(chain, hash)), false, AccountData.token);
             if (string.IsNullOrWhiteSpace(www.error)) return;
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
         public async Task<string> LoveCollection(string collectionName) {
-            var www = await PostWWW($"users/{AccountData.user._id}/loveWaxCollection/{collectionName}", "", true, AccountData.token);
+            var www = await PostWWW($"users/loveWaxCollection/{collectionName}", "", true, AccountData.token);
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("FOLLOW COLLECTION ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
@@ -292,7 +292,7 @@ namespace Pixygon.Passport {
         }
         public async void SetProfile(string bio, string displayName, string[] links, Action<ErrorResponse> onFail = null) {
             Debug.Log("Patching profile");
-            var www = await PostWWW($"users/{AccountData.user._id}/setProfile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
+            var www = await PostWWW($"users/setProfile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
             await RefreshUser();
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
