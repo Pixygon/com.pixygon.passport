@@ -133,7 +133,7 @@ namespace Pixygon.Passport {
             if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
-        public async Task<string> GetUserFromTwitch(string twitchId) {
+        public async Task<AccountData> GetUserFromTwitch(string twitchId) {
             var www = await GetWWW($"users/twitch/{twitchId}");
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
@@ -141,7 +141,7 @@ namespace Pixygon.Passport {
             }
             Debug.Log(www.downloadHandler.text);
             if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
-            return JsonUtility.FromJson<string>(www.downloadHandler.text);
+            return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
         public async Task<string> FollowUser(string followId) {
             var www = await PostWWW($"users/{followId}", "", true, AccountData.token);
