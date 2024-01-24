@@ -139,6 +139,7 @@ namespace Pixygon.Passport {
                 Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
             }
+            Debug.Log(www.downloadHandler.text);
             if (string.IsNullOrWhiteSpace(www.downloadHandler.text) || www.downloadHandler.text == "null") return null;
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
