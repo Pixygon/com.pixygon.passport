@@ -297,6 +297,12 @@ namespace Pixygon.Passport {
             await RefreshUser();
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
+        public async void SetLatestActivity(string activity, string subactivity) {
+            Debug.Log("Set latest activity");
+            var www = await PostWWW($"users/activity",JsonUtility.ToJson(new Activity(activity, subactivity)), false, AccountData.token);
+            //await RefreshUser();
+            //onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
+        }
 
         private async static Task<UnityWebRequest> GetWWW(string path, string token = "") {
             var www = UnityWebRequest.Get(PixygonServerURL + path);
@@ -328,6 +334,17 @@ namespace Pixygon.Passport {
             //SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
+    }
+
+    [Serializable]
+    public class Activity {
+        public string activity;
+        public string subactivity;
+
+        public Activity(string a, string b) {
+            activity = a;
+            subactivity = b;
+        }
     }
     [Serializable]
     public class Savejson {
