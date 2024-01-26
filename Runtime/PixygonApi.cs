@@ -301,6 +301,9 @@ namespace Pixygon.Passport {
             Debug.Log("Set latest activity");
             var www = await PostWWW($"users/activity",JsonUtility.ToJson(new Activity(activity, subactivity)), false, AccountData.token);
             //await RefreshUser();
+            if (www.error != null) {
+                Debug.Log(www.error + "\n" + www.downloadHandler.text);
+            }
             //onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
 
