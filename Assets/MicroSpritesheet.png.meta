@@ -304,13 +304,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Butterfly_Logo
+      name: Logo_Butterfly_Purple
       rect:
         serializedVersion: 2
         x: 1280
-        y: 1548
-        width: 500
-        height: 500
+        y: 1536
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -412,7 +412,7 @@ TextureImporter:
       name: Panel_Gradient
       rect:
         serializedVersion: 2
-        x: 128
+        x: 256
         y: 96
         width: 64
         height: 512
@@ -450,6 +450,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Logo_Butterfly_Blue
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1536
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fa644a5ba177d347b6c24f46828303f
+      internalID: -1380653421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -463,7 +484,6 @@ TextureImporter:
     nameFileIdTable:
       Bg_Butterfly: -110415368
       Bg_Gradient: -1716111823
-      Butterfly_Logo: -1761631957
       Icon_Butterfly: -488149933
       Icon_Circle: 223225269
       Icon_LB: 848046415
@@ -472,7 +492,8 @@ TextureImporter:
       Icon_Style: 1146898420
       Icon_Trophy: -1386970370
       Icon_X: -858626023
-      MicroSpritesheet_0: 1656897182
+      Logo_Butterfly_Blue: 1656897182
+      Logo_Butterfly_Purple: -1761631957
       Panel_Circular: 1252721734
       Panel_Gradient: 1650862832
       Panel_Rounded: 352174192

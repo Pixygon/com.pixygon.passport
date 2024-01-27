@@ -15,12 +15,20 @@ namespace Pixygon.Passport
         private float _openTimer;
         private bool _open = true;
         public void Set() {
-            _usernameText.text = $"Hi, {PixygonApi.Instance.AccountData.user.userName}!";
-            var s = PixygonApi.Instance.AccountData.user.latestActivity.Split('|');
-            _activityText.text = s[0];
-            _subActivityText.text = s[1];
-            _profilePic.sprite = null;
-            _gameIcon.sprite = null;
+            if (!PixygonApi.Instance.IsLoggedIn) {
+                _usernameText.text = "Not logged in!";
+                _activityText.text = string.Empty;
+                _subActivityText.text = string.Empty;
+                _profilePic.sprite = null;
+                _gameIcon.sprite = null;
+            } else {
+                _usernameText.text = PixygonApi.Instance.AccountData.user.userName;
+                var s = PixygonApi.Instance.AccountData.user.latestActivity.Split('|');
+                _activityText.text = s[0];
+                _subActivityText.text = s[1];
+                _profilePic.sprite = null;
+                _gameIcon.sprite = null;
+            }
             _openTimer = 30f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
