@@ -33,7 +33,7 @@ namespace Pixygon.Passport {
         private string _currentUser;
 
 
-        private void Awake() {
+        private void Start() {
             DoStartUpLogin();
         }
         private void ClearInputs() {
