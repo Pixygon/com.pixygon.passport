@@ -18,10 +18,6 @@ namespace Pixygon.Passport {
         [SerializeField] private GameObject _forgotPasswordPanel;
 
         [SerializeField] private TMP_InputField _emailInput;
-        [SerializeField] private TMP_InputField _resetHashInput;
-        [SerializeField] private TMP_InputField _resetPassInput;
-        [SerializeField] private TMP_InputField _resetPassConfirmInput;
-        [SerializeField] private GameObject _resetPassRequestPanel;
 
         [SerializeField] private AccountErrors _accountErrors;
 
@@ -36,9 +32,6 @@ namespace Pixygon.Passport {
         private void ClearInputs() {
             _verificationCode.text = "";
             _emailInput.text = "";
-            _resetHashInput.text = "";
-            _resetPassInput.text = "";
-            _resetPassConfirmInput.text = "";
         }
 
 
@@ -190,23 +183,22 @@ namespace Pixygon.Passport {
             _loginPanel.ActivateScreen(false);
         }
 
+        [SerializeField] private ResetPasswordPanel _resetPasswordPanel;
+
         private void ResetPasswordComplete() {
             _loginLoadingScreen.SetActive(false);
             _forgotPasswordPanel.SetActive(false);
-            _resetPassRequestPanel.SetActive(true);
+            _resetPasswordPanel.ActivateScreen(true);
         }
 
-        public void OnSendResetPassword() {
-            if (_resetPassInput.text != _resetPassConfirmInput.text) return;
-            _api.ForgotPasswordRecovery(_emailInput.text, _resetHashInput.text,
-                _resetPassInput.text, NewPasswordSet,
+        public void OnSendResetPassword(string hash, string newPass) {
+            _api.ForgotPasswordRecovery(_emailInput.text, hash, newPass, NewPasswordSet,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
-                        () => { _resetPassRequestPanel.SetActive(true); });
+                        () => { _resetPasswordPanel.ActivateScreen(true); });
                     SetError();
                 });
             _loginLoadingScreen.SetActive(true);
-            _resetPassRequestPanel.SetActive(false);
         }
 
         private void NewPasswordSet() {
@@ -223,7 +215,7 @@ namespace Pixygon.Passport {
             _api.DeleteUser(DeletionComplete,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
-                        () => { _resetPassRequestPanel.SetActive(true); });
+                        () => { });
                     SetError();
                 });
         }
