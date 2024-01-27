@@ -22,7 +22,6 @@ namespace Pixygon.Passport {
         [SerializeField] private AccountErrors _accountErrors;
 
         [SerializeField] private GameObject _deleteAccountPanel;
-        [SerializeField] private PixygonApi _api;
         [SerializeField] private LoginPanel _loginPanel;
         [SerializeField] private RegisterPanel _registerPanel;
 
@@ -38,8 +37,8 @@ namespace Pixygon.Passport {
         private void Update() {
             switch (_loginState) {
                 case LoginState.Startup:
-                    if (_api.IsLoggingIn) return;
-                    if (_api.IsLoggedIn)
+                    if (PixygonApi.Instance.IsLoggingIn) return;
+                    if (PixygonApi.Instance.IsLoggedIn)
                         CloseAccountScreen();
                     else {
                         StartLogin();
@@ -47,8 +46,8 @@ namespace Pixygon.Passport {
 
                     break;
                 case LoginState.Login:
-                    if (_api.IsLoggingIn) return;
-                    if (_api.IsLoggedIn)
+                    if (PixygonApi.Instance.IsLoggingIn) return;
+                    if (PixygonApi.Instance.IsLoggedIn)
                         CloseAccountScreen();
                     else {
                         StartLogin();
@@ -60,14 +59,14 @@ namespace Pixygon.Passport {
 
         public void StartLogin() {
             _loginState = LoginState.Login;
-            if (_api.IsLoggedIn) {
+            if (PixygonApi.Instance.IsLoggedIn) {
                 if (_loginState == LoginState.Login)
                     CloseAccountScreen();
             }
             else {
                 gameObject.SetActive(true);
-                _loginPanel.ActivateScreen(!_api.IsLoggingIn);
-                _loginLoadingScreen.SetActive(_api.IsLoggingIn);
+                _loginPanel.ActivateScreen(!PixygonApi.Instance.IsLoggingIn);
+                _loginLoadingScreen.SetActive(PixygonApi.Instance.IsLoggingIn);
             }
         }
 
@@ -92,7 +91,7 @@ namespace Pixygon.Passport {
         }
 
         public void OnLogout() {
-            _api.StartLogout();
+            PixygonApi.Instance.StartLogout();
             _loginPanel.ActivateScreen(true);
             _logoutScreen.SetActive(false);
             ClearInputs();
@@ -103,7 +102,7 @@ namespace Pixygon.Passport {
         }
 
         public void Login(string user, string pass, bool rememberMe) {
-            _api.StartLogin(user, pass, rememberMe, LoginComplete,
+            PixygonApi.Instance.StartLogin(user, pass, rememberMe, LoginComplete,
                 s => {
                     _accountErrors.SetErrorMessage("Login Failed", s, StartLogin);
                     SetError();
@@ -112,7 +111,7 @@ namespace Pixygon.Passport {
         }
 
         private void LoginComplete() {
-            if (!_api.IsLoggedIn) return;
+            if (!PixygonApi.Instance.IsLoggedIn) return;
             _loginLoadingScreen.SetActive(false);
             PopulateAccountScreen();
         }
@@ -125,7 +124,7 @@ namespace Pixygon.Passport {
         
 
         public void Signup(string user, string email, string pass, bool rememberMe) {
-            _api.StartSignup(user, email, pass,
+            PixygonApi.Instance.StartSignup(user, email, pass,
                 rememberMe, SignupComplete, s => {
                     _accountErrors.SetErrorMessage("Signup Failed", s, StartRegister);
                     SetError();
@@ -144,7 +143,7 @@ namespace Pixygon.Passport {
         }
 
         public void OnVerify() {
-            _api.VerifyUser(currentUser, int.Parse(_verificationCode.text),
+            PixygonApi.Instance.VerifyUser(currentUser, int.Parse(_verificationCode.text),
                 VerificationComplete, s => {
                     _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
                     SetError();
@@ -154,7 +153,7 @@ namespace Pixygon.Passport {
         }
 
         private void VerificationComplete() {
-            if (!_api.IsLoggedIn) return;
+            if (!PixygonApi.Instance.IsLoggedIn) return;
             _verificationPanel.SetActive(false);
             PopulateAccountScreen();
             CloseAccountScreen();
@@ -174,7 +173,7 @@ namespace Pixygon.Passport {
         }
 
         public void OnResetPassword() {
-            _api.ForgotPassword(_emailInput.text, ResetPasswordComplete, s => {
+            PixygonApi.Instance.ForgotPassword(_emailInput.text, ResetPasswordComplete, s => {
                 _accountErrors.SetErrorMessage("Recovery Failed", s, () => { _forgotPasswordPanel.SetActive(true); });
                 SetError();
             });
@@ -192,7 +191,7 @@ namespace Pixygon.Passport {
         }
 
         public void OnSendResetPassword(string hash, string newPass) {
-            _api.ForgotPasswordRecovery(_emailInput.text, hash, newPass, NewPasswordSet,
+            PixygonApi.Instance.ForgotPasswordRecovery(_emailInput.text, hash, newPass, NewPasswordSet,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
                         () => { _resetPasswordPanel.ActivateScreen(true); });
@@ -212,7 +211,7 @@ namespace Pixygon.Passport {
         }
 
         public void OnDeleteAccount() {
-            _api.DeleteUser(DeletionComplete,
+            PixygonApi.Instance.DeleteUser(DeletionComplete,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
                         () => { });

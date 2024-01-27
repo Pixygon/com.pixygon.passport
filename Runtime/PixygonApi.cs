@@ -10,7 +10,10 @@ namespace Pixygon.Passport {
         public bool IsLoggedIn { get; private set; }
         public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
+        public static PixygonApi Instance;
         private async void Awake() {
+            if(Instance != null) Destroy(Instance);
+            Instance = this;
             if (PlayerPrefs.GetInt("RememberMe") != 1) return;
             IsLoggingIn = true;
             AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
