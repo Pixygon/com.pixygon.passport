@@ -12660,18 +12660,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40bb3fe3ae7223c46a8dbc9d68571550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _showSignInAtLaunch: 0
   _loginLoadingScreen: {fileID: 8371058675799199349}
-  _logoutScreen: {fileID: 0}
-  _verificationPanel: {fileID: 0}
-  _verificationCode: {fileID: 0}
-  _forgotPasswordPanel: {fileID: 0}
-  _emailInput: {fileID: 0}
+  _logoutScreen: {fileID: 8371058677266362147}
+  _verificationPanel: {fileID: 3984514317000522487}
+  _verificationCode: {fileID: 3762965209678717720}
+  _forgotPasswordPanel: {fileID: 2433710669814126484}
+  _emailInput: {fileID: 4066642635263483253}
   _accountErrors: {fileID: 8939716097681311881}
-  _deleteAccountPanel: {fileID: 0}
-  _api: {fileID: 0}
+  _deleteAccountPanel: {fileID: 5279667291978736182}
   _loginPanel: {fileID: 1806509970398813208}
   _registerPanel: {fileID: 5502683791555875608}
-  _resetPasswordPanel: {fileID: 0}
+  LoginState: 0
+  _resetPasswordPanel: {fileID: 2046982291386441210}
 --- !u!1 &8371058676322925063
 GameObject:
   m_ObjectHideFlags: 0

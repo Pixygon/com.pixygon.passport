@@ -14,7 +14,7 @@ namespace Pixygon.Passport {
         [Header("Verification")]
         [SerializeField] private GameObject _verificationPanel;
 
-        [SerializeField] private InputField _verificationCode;
+        [SerializeField] private TMP_InputField _verificationCode;
 
         [Header("Reset Password")]
         [SerializeField] private GameObject _forgotPasswordPanel;
