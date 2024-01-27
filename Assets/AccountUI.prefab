@@ -12958,7 +12958,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2934390732424311679}
         m_TargetAssemblyTypeName: Pixygon.Passport.AccountUI, Pixygon.Passport
-        m_MethodName: StartLogout
+        m_MethodName: OnLogout
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
