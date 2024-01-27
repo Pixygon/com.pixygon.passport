@@ -40,7 +40,6 @@ namespace Pixygon.Passport {
             _verificationCode.text = "";
             _emailInput.text = "";
         }
-
         private async void DoStartUpLogin() {
             while (PixygonApi.Instance.IsLoggingIn) await Task.Yield();
             if (PixygonApi.Instance.IsLoggedIn)
@@ -52,8 +51,6 @@ namespace Pixygon.Passport {
                     CloseAccountScreen();
             }
         }
-
-
         private void Update() {
             return;
             switch (LoginState) {
@@ -117,6 +114,7 @@ namespace Pixygon.Passport {
         }
         private void PopulateAccountScreen() {
             _loginLoadingScreen.SetActive(false);
+            CloseAccountScreen();
         }
 
         public void Login(string user, string pass, bool rememberMe) {
