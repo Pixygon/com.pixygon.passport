@@ -43,7 +43,7 @@ namespace Pixygon.Passport
 
         private void Update() {
             if (_open && !_isOver) {
-                if (_openTimer < 0f)
+                if (_openTimer > 0f)
                     _openTimer -= Time.deltaTime;
                 else {
                     _open = false;

@@ -48,8 +48,8 @@ namespace Pixygon.Passport {
             _levelText.text = "0";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             //_gameIcon.sprite = _noGameSprite;
-            CheckIfFollowing();
             _user = user;
+            CheckIfFollowing();
         }
 
         private void CheckIfFollowing() {
