@@ -28,9 +28,9 @@ namespace Pixygon.Passport {
         public void Set(AccountData user) {
             gameObject.SetActive(true);
             
-            _usernameText.text = user.displayName != string.Empty ? user.displayName : user.userName;
+            _usernameText.text = string.IsNullOrEmpty(user.displayName) ? user.userName : user.displayName;
 
-            if (user.latestActivity != string.Empty) {
+            if (!string.IsNullOrEmpty(user.latestActivity)) {
                 var s = user.latestActivity.Split('|');
                 _activityText.text = s[0];
                 _subactivityText.text = s[1];
