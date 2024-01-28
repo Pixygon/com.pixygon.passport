@@ -58,6 +58,7 @@ namespace Pixygon.Passport {
                 if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
                     _unfollowBtn.SetActive(true);
                     _followBtn.SetActive(false);
+                    _followLoading.SetActive(false);
                     return;
                 }
             }

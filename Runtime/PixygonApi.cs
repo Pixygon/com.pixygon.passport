@@ -108,6 +108,16 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/addDreadwagerSkin/{i}", "", true, AccountData.token);
             Debug.Log("Dreadwager Skin Patch: " + www.downloadHandler.text);
         }
+        public async void PatchGameXp(int i) {
+            Debug.Log("Patching Game XP");
+            var www = await PostWWW($"users/gameXp/{i}", "", true, AccountData.token);
+            Debug.Log("Patching Game XP: " + www.downloadHandler.text);
+        }
+        public async void PatchStreamerXp(int i) {
+            Debug.Log("Patching Streamer XP");
+            var www = await PostWWW($"users/streamerXp/{i}", "", true, AccountData.token);
+            Debug.Log("Patching Streamer XP: " + www.downloadHandler.text);
+        }
 
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
             PlayerPrefs.DeleteKey("RememberMe");
