@@ -21,10 +21,12 @@ namespace Pixygon.Passport {
         [SerializeField] private Sprite _noGameSprite;
 
         public async void GetUser(string id) {
+            gameObject.SetActive(true);
             var user = await PixygonApi.Instance.GetUser(id);
             Set(user);
         }
         public void Set(AccountData user) {
+            gameObject.SetActive(true);
             _usernameText.text = user.displayName;
             var s = user.latestActivity.Split('|');
             _activityText.text = s[0];
@@ -34,6 +36,10 @@ namespace Pixygon.Passport {
             _levelText.text = "0";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             //_gameIcon.sprite = _noGameSprite;
+        }
+
+        public void Close() {
+            gameObject.SetActive(false);
         }
     }
 }
