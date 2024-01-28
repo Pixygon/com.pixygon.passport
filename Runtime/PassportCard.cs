@@ -1,3 +1,4 @@
+using System.Linq;
 using Pixygon.Saving;
 using TMPro;
 using UnityEngine;
@@ -20,8 +21,14 @@ namespace Pixygon.Passport {
         [SerializeField] private Sprite _noPfpSprite;
         [SerializeField] private Sprite _noGameSprite;
 
+        [SerializeField] private GameObject _followBtn;
+        [SerializeField] private GameObject _unfollowBtn;
+        [SerializeField] private GameObject _followLoading;
+        
+        private AccountData _user;
         public async void GetUser(string id) {
             gameObject.SetActive(true);
+            _user = null;
             var user = await PixygonApi.Instance.GetUser(id);
             Set(user);
         }
@@ -41,10 +48,35 @@ namespace Pixygon.Passport {
             _levelText.text = "0";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             //_gameIcon.sprite = _noGameSprite;
+            CheckIfFollowing();
+            _user = user;
+        }
+
+        private void CheckIfFollowing() {
+            if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
+                _unfollowBtn.SetActive(true);
+                _followBtn.SetActive(false);
+                return;
+            }
+            _unfollowBtn.SetActive(false);
+            _followBtn.SetActive(true);
         }
 
         public void Close() {
             gameObject.SetActive(false);
+        }
+
+        public async void OnFollow() {
+            _followBtn.SetActive(false);
+            _followLoading.SetActive(true);
+            await PixygonApi.Instance.FollowUser(_user._id);
+            GetUser(_user._id);
+        }
+        public async void OnUnfollow() {
+            _unfollowBtn.SetActive(false);
+            _followLoading.SetActive(true);
+            await PixygonApi.Instance.FollowUser(_user._id);
+            GetUser(_user._id);
         }
     }
 }

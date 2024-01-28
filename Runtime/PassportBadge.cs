@@ -9,7 +9,7 @@ namespace Pixygon.Passport
         [SerializeField] private TextMeshProUGUI _usernameText;
         [SerializeField] private TextMeshProUGUI _activityText;
         [SerializeField] private TextMeshProUGUI _subActivityText;
-        [SerializeField] private Image _profilePic;
+        [SerializeField] private IconGetter _profilePic;
         [SerializeField] private Image _gameIcon;
 
         private float _openTimer;
@@ -19,14 +19,20 @@ namespace Pixygon.Passport
                 _usernameText.text = "Not logged in!";
                 _activityText.text = string.Empty;
                 _subActivityText.text = string.Empty;
-                _profilePic.sprite = null;
+                _profilePic.ClearIcon();
                 _gameIcon.sprite = null;
             } else {
-                _usernameText.text = PixygonApi.Instance.AccountData.user.userName;
-                var s = PixygonApi.Instance.AccountData.user.latestActivity.Split('|');
-                _activityText.text = s[0];
-                _subActivityText.text = s[1];
-                _profilePic.sprite = null;
+                _usernameText.text = string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.displayName)
+                    ? PixygonApi.Instance.AccountData.user.userName
+                    : PixygonApi.Instance.AccountData.user.displayName;
+
+                Debug.Log("Time to get the pfp!");
+                if (!string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.latestActivity)) {
+                    var s = PixygonApi.Instance.AccountData.user.latestActivity.Split('|');
+                    _activityText.text = s[0];
+                    _subActivityText.text = s[1];
+                }
+                _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
                 _gameIcon.sprite = null;
             }
             _openTimer = 30f;
