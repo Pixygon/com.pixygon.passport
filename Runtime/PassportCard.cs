@@ -27,10 +27,15 @@ namespace Pixygon.Passport {
         }
         public void Set(AccountData user) {
             gameObject.SetActive(true);
-            _usernameText.text = user.displayName;
-            var s = user.latestActivity.Split('|');
-            _activityText.text = s[0];
-            _subactivityText.text = s[1];
+            
+            _usernameText.text = user.displayName != string.Empty ? user.displayName : user.userName;
+
+            if (user.latestActivity != string.Empty) {
+                var s = user.latestActivity.Split('|');
+                _activityText.text = s[0];
+                _subactivityText.text = s[1];
+            }
+
             _bioText.text = user.bio;
             _followersText.text = $"{user.followers.Length} Followers";
             _levelText.text = "0";
