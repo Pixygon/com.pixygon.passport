@@ -564,7 +564,7 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -585,7 +585,7 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -593,6 +593,27 @@ TextureImporter:
       bones: []
       spriteID: 1d1cfb69717271c43b43fb913cc7b506
       internalID: 282037310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Loading
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1026
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56f4c102651ddf74fa5fec38d8fb267f
+      internalID: 1808679385
       vertices: []
       indices: 
       edges: []
@@ -617,6 +638,7 @@ TextureImporter:
       Icon_Heart_Empty: -1570198069
       Icon_Heart_Whole: -1785105754
       Icon_LB: 848046415
+      Icon_Loading: 1808679385
       Icon_NoPfp: -1049999649
       Icon_RB: 1430610116
       Icon_Settings: -208777730
