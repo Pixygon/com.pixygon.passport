@@ -471,6 +471,132 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Icon_Back
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1026
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bcad37ec890e7024db56e4af00f7b8c6
+      internalID: 436502366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Heart_Whole
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1154
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a52d2315425ec744ca723541cc9fe08a
+      internalID: -1785105754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Heart_Broken
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1154
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91e89fa1bebe9e44fbed2ed790983349
+      internalID: 1991789660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Heart_Empty
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1154
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27f3e1536c0830a4e8f3dec3124ad9ca
+      internalID: -1570198069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_NoPfp
+      rect:
+        serializedVersion: 2
+        x: 3328
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72f30e0e12ab7e1419d2470287707933
+      internalID: -1049999649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2816
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d1cfb69717271c43b43fb913cc7b506
+      internalID: 282037310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -484,9 +610,14 @@ TextureImporter:
     nameFileIdTable:
       Bg_Butterfly: -110415368
       Bg_Gradient: -1716111823
+      Icon_Back: 436502366
       Icon_Butterfly: -488149933
       Icon_Circle: 223225269
+      Icon_Heart_Broken: 1991789660
+      Icon_Heart_Empty: -1570198069
+      Icon_Heart_Whole: -1785105754
       Icon_LB: 848046415
+      Icon_NoPfp: -1049999649
       Icon_RB: 1430610116
       Icon_Settings: -208777730
       Icon_Style: 1146898420
@@ -494,6 +625,7 @@ TextureImporter:
       Icon_X: -858626023
       Logo_Butterfly_Blue: 1656897182
       Logo_Butterfly_Purple: -1761631957
+      MicroSpritesheet_1: 282037310
       Panel_Circular: 1252721734
       Panel_Gradient: 1650862832
       Panel_Rounded: 352174192
