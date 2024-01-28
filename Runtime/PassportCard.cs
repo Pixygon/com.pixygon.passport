@@ -53,10 +53,12 @@ namespace Pixygon.Passport {
         }
 
         private void CheckIfFollowing() {
-            if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
-                _unfollowBtn.SetActive(true);
-                _followBtn.SetActive(false);
-                return;
+            if (PixygonApi.Instance.AccountData.user.following != null) {
+                if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
+                    _unfollowBtn.SetActive(true);
+                    _followBtn.SetActive(false);
+                    return;
+                }
             }
             _unfollowBtn.SetActive(false);
             _followBtn.SetActive(true);
