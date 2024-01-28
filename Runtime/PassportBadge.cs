@@ -35,7 +35,7 @@ namespace Pixygon.Passport
                 _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
                 _gameIcon.sprite = null;
             }
-            _openTimer = 10f;
+            _openTimer = 5f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
         }
@@ -55,7 +55,7 @@ namespace Pixygon.Passport
         private bool _isOver;
         public void OnPointerEnter(PointerEventData eventData) {
             _isOver = true;
-            _openTimer = 10f;
+            _openTimer = 5f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
         }

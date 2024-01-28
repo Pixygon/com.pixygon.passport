@@ -147,7 +147,7 @@ namespace Pixygon.Passport {
             return JsonUtility.FromJson<AccountData>(www.downloadHandler.text);
         }
         public async Task<string> FollowUser(string followId) {
-            var www = await PostWWW($"users/{followId}", "", true, AccountData.token);
+            var www = await PostWWW($"users/follow/{followId}", "", true, AccountData.token);
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("FOLLOW USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
@@ -156,7 +156,7 @@ namespace Pixygon.Passport {
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
         public async Task<string> GetFollowing(string userId) {
-            var www = await GetWWW($"users/{userId}/following");
+            var www = await GetWWW($"users/following/{userId}");
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
@@ -165,7 +165,7 @@ namespace Pixygon.Passport {
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
         public async Task<string> GetFollowers(string userId) {
-            var www = await GetWWW($"users/{userId}/followers");
+            var www = await GetWWW($"users/followers/{userId}");
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET FOLLOWERS ERROR!! " + www.error + " and this " + www.downloadHandler.text);
                 return null;
