@@ -118,6 +118,11 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/streamerXp/{i}", "", true, AccountData.token);
             Debug.Log("Patching Streamer XP: " + www.downloadHandler.text);
         }
+        public async void PatchViewerXp(int i, string id) {
+            Debug.Log("Patching Viewer XP");
+            var www = await PostWWW($"users/viewerXp/{i}/{id}", "", true);
+            Debug.Log("Patching Viewer XP: " + www.downloadHandler.text);
+        }
 
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
             PlayerPrefs.DeleteKey("RememberMe");

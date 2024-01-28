@@ -606,7 +606,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -614,6 +614,90 @@ TextureImporter:
       bones: []
       spriteID: 56f4c102651ddf74fa5fec38d8fb267f
       internalID: 1808679385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_GameXp
+      rect:
+        serializedVersion: 2
+        x: 1937
+        y: 1037
+        width: 223
+        height: 229
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f03b0b4bdaa12ba44a5a57eda78579f3
+      internalID: 427744368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_StreamerXp
+      rect:
+        serializedVersion: 2
+        x: 2193
+        y: 1037
+        width: 223
+        height: 229
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a31df0e0ee95c82479d20a44b19c84b1
+      internalID: 1317471524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_ViewerXp
+      rect:
+        serializedVersion: 2
+        x: 2193
+        y: 781
+        width: 223
+        height: 229
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d61c9aeaa939739498c29dc56d893444
+      internalID: -1484663888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_CommunityXp
+      rect:
+        serializedVersion: 2
+        x: 1937
+        y: 781
+        width: 223
+        height: 229
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb4ccc4e373bc7f46bfe0a12e8ee9d4c
+      internalID: 610598128
       vertices: []
       indices: 
       edges: []
@@ -634,6 +718,8 @@ TextureImporter:
       Icon_Back: 436502366
       Icon_Butterfly: -488149933
       Icon_Circle: 223225269
+      Icon_CommunityXp: 610598128
+      Icon_GameXp: 427744368
       Icon_Heart_Broken: 1991789660
       Icon_Heart_Empty: -1570198069
       Icon_Heart_Whole: -1785105754
@@ -642,8 +728,10 @@ TextureImporter:
       Icon_NoPfp: -1049999649
       Icon_RB: 1430610116
       Icon_Settings: -208777730
+      Icon_StreamerXp: 1317471524
       Icon_Style: 1146898420
       Icon_Trophy: -1386970370
+      Icon_ViewerXp: -1484663888
       Icon_X: -858626023
       Logo_Butterfly_Blue: 1656897182
       Logo_Butterfly_Purple: -1761631957

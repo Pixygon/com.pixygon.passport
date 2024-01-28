@@ -24,15 +24,35 @@ namespace Pixygon.Passport {
         [SerializeField] private GameObject _followBtn;
         [SerializeField] private GameObject _unfollowBtn;
         [SerializeField] private GameObject _followLoading;
+
+        [SerializeField] private XpTab _gameTab;
+        [SerializeField] private XpTab _streamerTab;
+        [SerializeField] private XpTab _communityTab;
+        [SerializeField] private XpTab _viewerTab;
         
         private AccountData _user;
+
+        private void Clear() {
+            _usernameText.text = "Loading";
+            _activityText.text = "";
+            _subactivityText.text = "";
+            _bioText.text = "";
+            _followersText.text = "";
+            _levelText.text = "-";
+            _pfpIcon.ClearIcon();
+            _gameTab.SetTab(0);
+            _streamerTab.SetTab(0);
+            _communityTab.SetTab(0);
+            _viewerTab.SetTab(0);
+        }
         public async void GetUser(string id) {
+            Clear();
             gameObject.SetActive(true);
             _user = null;
             var user = await PixygonApi.Instance.GetUser(id);
             Set(user);
         }
-        public void Set(AccountData user) {
+        private void Set(AccountData user) {
             gameObject.SetActive(true);
             
             _usernameText.text = string.IsNullOrEmpty(user.displayName) ? user.userName : user.displayName;
@@ -48,6 +68,10 @@ namespace Pixygon.Passport {
             _levelText.text = "0";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             //_gameIcon.sprite = _noGameSprite;
+            _gameTab.SetTab(user.gameXp);
+            _streamerTab.SetTab(user.streamerXp);
+            _communityTab.SetTab(user.communityXp);
+            _viewerTab.SetTab(user.viewerXp);
             _user = user;
             CheckIfFollowing();
         }
