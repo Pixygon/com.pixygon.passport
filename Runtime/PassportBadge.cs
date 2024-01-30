@@ -1,3 +1,4 @@
+using Pixygon.Saving;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,6 +15,7 @@ namespace Pixygon.Passport
 
         private float _openTimer;
         private bool _open = true;
+        private bool _isOver;
         public void Set() {
             if (!PixygonApi.Instance.IsLoggedIn) {
                 _usernameText.text = "Not logged in!";
@@ -21,25 +23,31 @@ namespace Pixygon.Passport
                 _subActivityText.text = string.Empty;
                 _profilePic.ClearIcon();
                 _gameIcon.sprite = null;
+                _gameIcon.gameObject.SetActive(false);
             } else {
                 _usernameText.text = string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.displayName)
                     ? PixygonApi.Instance.AccountData.user.userName
                     : PixygonApi.Instance.AccountData.user.displayName;
 
                 Debug.Log("Time to get the pfp!");
-                if (!string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.latestActivity)) {
-                    var s = PixygonApi.Instance.AccountData.user.latestActivity.Split('|');
-                    _activityText.text = s[0];
-                    _subActivityText.text = s[1];
-                }
                 _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
-                _gameIcon.sprite = null;
+                GetGame(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
             }
             _openTimer = 5f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
         }
-        
+
+        private async void GetGame(string activity, string id) {
+            _gameIcon.sprite = null;
+            _gameIcon.gameObject.SetActive(false);
+            if (!string.IsNullOrEmpty(activity)) {
+                var s = activity.Split('|');
+                _activityText.text = s[0];
+                _subActivityText.text = s[1];
+            }
+            var game = PixygonApi.Instance.GetGame(id);
+        }
 
         private void Update() {
             if (_open && !_isOver) {
@@ -51,17 +59,20 @@ namespace Pixygon.Passport
                 }
             }            
         }
-
-        private bool _isOver;
         public void OnPointerEnter(PointerEventData eventData) {
             _isOver = true;
             _openTimer = 5f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
         }
-
         public void OnPointerExit(PointerEventData eventData) {
             _isOver = false;
+        }
+        public void OnClick() {
+            if (!PixygonApi.Instance.IsLoggedIn)
+                FindFirstObjectByType<AccountUI>()?.StartLogin();
+            else
+                FindFirstObjectByType<PassportCard>()?.GetUser(PixygonApi.Instance.AccountData.user._id);
         }
     }
 }

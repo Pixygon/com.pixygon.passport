@@ -460,7 +460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e2bc4287c1836624cb49770e19a7540d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2319602912fa75c4fbf41a32b24c9479, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -806,10 +806,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Pixygon.Micro.HomeAccountScreen, Pixygon.Micro
-        m_MethodName: OpenScreen
-        m_Mode: 6
+      - m_Target: {fileID: 2774910247257631152}
+        m_TargetAssemblyTypeName: Pixygon.Passport.PassportBadge, Pixygon.Passport
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

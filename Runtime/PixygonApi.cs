@@ -309,15 +309,25 @@ namespace Pixygon.Passport {
             Debug.Log(www.downloadHandler.text);
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
+        public async Task<string> GetGame(string gameId) {
+            var www = await GetWWW($"games/{gameId}");
+            if (!string.IsNullOrWhiteSpace(www.error))
+            {
+                Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
+                return null;
+            }
+            Debug.Log(www.downloadHandler.text);
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
         public async void SetProfile(string bio, string displayName, string[] links, Action<ErrorResponse> onFail = null) {
             Debug.Log("Patching profile");
             var www = await PostWWW($"users/setProfile", JsonUtility.ToJson(new ProfileData(bio, displayName, links)), false, AccountData.token);
             await RefreshUser();
             onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
-        public async void SetLatestActivity(string activity, string subactivity) {
+        public async void SetLatestActivity(string activity, string subactivity, string gameId) {
             Debug.Log("Set latest activity");
-            var www = await PostWWW($"users/activity",JsonUtility.ToJson(new Activity(activity, subactivity)), false, AccountData.token);
+            var www = await PostWWW($"users/activity",JsonUtility.ToJson(new Activity(activity, subactivity, gameId)), false, AccountData.token);
             //await RefreshUser();
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
@@ -361,10 +371,12 @@ namespace Pixygon.Passport {
     public class Activity {
         public string activity;
         public string subactivity;
+        public string gameId;
 
-        public Activity(string a, string b) {
+        public Activity(string a, string b, string id) {
             activity = a;
             subactivity = b;
+            gameId = id;
         }
     }
     [Serializable]
