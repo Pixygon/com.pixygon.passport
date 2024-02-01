@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 
 namespace Pixygon.Passport {
-    public class AccountErrors : MonoBehaviour {
+    public class ErrorPanel : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _error;
 

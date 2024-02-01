@@ -23,5 +23,9 @@ namespace Pixygon.Passport {
             _accountUi.Login(_userInput.text, _passInput.text, _rememberMe.isOn);
             gameObject.SetActive(false);
         }
+
+        public void Back() {
+            
+        }
     }
 }

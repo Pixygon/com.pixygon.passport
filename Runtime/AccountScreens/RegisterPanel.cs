@@ -75,5 +75,9 @@ namespace Pixygon.Passport {
                 _signUpRememberMe.isOn);
             gameObject.SetActive(false);
         }
+
+        public void Back() {
+            
+        }
     }
 }

@@ -11,17 +11,12 @@ namespace Pixygon.Passport {
         
         [Header("Logout")] [SerializeField] private GameObject _logoutScreen;
 
-        [Header("Verification")]
-        [SerializeField] private GameObject _verificationPanel;
-
-        [SerializeField] private TMP_InputField _verificationCode;
-
         [Header("Reset Password")]
         [SerializeField] private GameObject _forgotPasswordPanel;
 
         [SerializeField] private TMP_InputField _emailInput;
 
-        [SerializeField] private AccountErrors _accountErrors;
+        [SerializeField] private ErrorPanel _accountErrors;
 
         [SerializeField] private GameObject _deleteAccountPanel;
         [SerializeField] private LoginPanel _loginPanel;
@@ -37,7 +32,6 @@ namespace Pixygon.Passport {
             DoStartUpLogin();
         }
         private void ClearInputs() {
-            _verificationCode.text = "";
             _emailInput.text = "";
         }
         private async void DoStartUpLogin() {
@@ -135,6 +129,8 @@ namespace Pixygon.Passport {
             LoginState = LoginState.Error;
             _loginLoadingScreen.SetActive(false);
         }
+
+        [SerializeField] private VerificationPanel _verificationPanel;
         public void Signup(string user, string email, string pass, bool rememberMe) {
             PixygonApi.Instance.StartSignup(user, email, pass,
                 rememberMe, SignupComplete, s => {
@@ -148,10 +144,10 @@ namespace Pixygon.Passport {
         private void SignupComplete() {
             Debug.Log("This is wrong!");
             _loginLoadingScreen.SetActive(false);
-            _verificationPanel.SetActive(true);
+            _verificationPanel.ActivateScreen(true);
         }
-        public void OnVerify() {
-            PixygonApi.Instance.VerifyUser(_currentUser, int.Parse(_verificationCode.text),
+        public void OnVerify(string code) {
+            PixygonApi.Instance.VerifyUser(_currentUser, int.Parse(code),
                 VerificationComplete, s => {
                     _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
                     SetError();
@@ -161,7 +157,7 @@ namespace Pixygon.Passport {
         }
         private void VerificationComplete() {
             if (!PixygonApi.Instance.IsLoggedIn) return;
-            _verificationPanel.SetActive(false);
+            _verificationPanel.ActivateScreen(false);
             PopulateAccountScreen();
             CloseAccountScreen();
         }
