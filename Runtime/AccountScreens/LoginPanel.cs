@@ -5,6 +5,7 @@ using UnityEngine.UI;
 namespace Pixygon.Passport {
     public class LoginPanel : MonoBehaviour {
         [SerializeField] private AccountUI _accountUi;
+        [SerializeField] private GameObject _backBtn;
         [SerializeField] private TMP_InputField _userInput;
         [SerializeField] private TMP_InputField _passInput;
         [SerializeField] private Toggle _rememberMe;
@@ -16,6 +17,7 @@ namespace Pixygon.Passport {
 
         public void ActivateScreen(bool active) {
             gameObject.SetActive(active);
+            _backBtn.SetActive(!_accountUi.ForceLogin);
             if(active) ClearInputs();
         }
         
@@ -25,7 +27,7 @@ namespace Pixygon.Passport {
         }
 
         public void Back() {
-            
+            _accountUi.CloseAccountScreen();
         }
     }
 }

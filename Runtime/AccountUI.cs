@@ -1,39 +1,35 @@
 using System;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Pixygon.Passport {
     public class AccountUI : MonoBehaviour {
         [SerializeField] private bool _showSignInAtLaunch;
-        [SerializeField] private GameObject _loginLoadingScreen;
+        [SerializeField] private bool _forceLogin;
         
-        [Header("Logout")] [SerializeField] private GameObject _logoutScreen;
-
-        [Header("Reset Password")]
-        [SerializeField] private GameObject _forgotPasswordPanel;
-
-        [SerializeField] private TMP_InputField _emailInput;
-
-        [SerializeField] private ErrorPanel _accountErrors;
-
+        [SerializeField] private GameObject _loginLoadingScreen;
+        [SerializeField] private GameObject _logoutScreen;
         [SerializeField] private GameObject _deleteAccountPanel;
+        
         [SerializeField] private LoginPanel _loginPanel;
         [SerializeField] private RegisterPanel _registerPanel;
+        [SerializeField] private VerificationPanel _verificationPanel;
+        [SerializeField] private ForgotPasswordRequestPanel _forgotPasswordRequestPanel;
+        [SerializeField] private ResetPasswordPanel _resetPasswordPanel;
+        [SerializeField] private ErrorPanel _accountErrors;
 
         public LoginState LoginState = LoginState.Startup;
         public Action OnLoginAction;
         public Action OnLogoutAction;
+        public bool ForceLogin => _forceLogin;
         private string _currentUser;
+        private string _currentEmail;
 
-
+        
         private void Start() {
             DoStartUpLogin();
         }
-        private void ClearInputs() {
-            _emailInput.text = "";
-        }
+        
         private async void DoStartUpLogin() {
             while (PixygonApi.Instance.IsLoggingIn) await Task.Yield();
             if (PixygonApi.Instance.IsLoggedIn)
@@ -84,6 +80,15 @@ namespace Pixygon.Passport {
             _registerPanel.ActivateScreen(true);
             LoginState = LoginState.Signup;
         }
+
+        public void CancelSignup() {
+            _registerPanel.ActivateScreen(false);
+            StartLogin();
+        }
+        public void CancelLogout() {
+            _logoutScreen.SetActive(false);
+            gameObject.SetActive(false);
+        }
         public void OpenAccountScreen() {
             LoginState = LoginState.None;
             PopulateAccountScreen();
@@ -96,13 +101,11 @@ namespace Pixygon.Passport {
         public void StartLogout() {
             _logoutScreen.SetActive(true);
             gameObject.SetActive(true);
-            _logoutScreen.SetActive(true);
         }
         public void OnLogout() {
             PixygonApi.Instance.StartLogout();
             //_loginPanel.ActivateScreen(true);
             _logoutScreen.SetActive(false);
-            ClearInputs();
             StartLogin();
             OnLogoutAction?.Invoke();
         }
@@ -130,7 +133,6 @@ namespace Pixygon.Passport {
             _loginLoadingScreen.SetActive(false);
         }
 
-        [SerializeField] private VerificationPanel _verificationPanel;
         public void Signup(string user, string email, string pass, bool rememberMe) {
             PixygonApi.Instance.StartSignup(user, email, pass,
                 rememberMe, SignupComplete, s => {
@@ -162,36 +164,32 @@ namespace Pixygon.Passport {
             CloseAccountScreen();
         }
         public void OpenPasswordReset() {
-            _forgotPasswordPanel.SetActive(true);
+            _forgotPasswordRequestPanel.ActivateScreen(true);
             _loginPanel.ActivateScreen(false);
             LoginState = LoginState.PasswordRecovery;
         }
         public void CancelPasswordReset() {
             _loginLoadingScreen.SetActive(false);
-            _forgotPasswordPanel.SetActive(false);
+            _forgotPasswordRequestPanel.ActivateScreen(false);
             _loginPanel.ActivateScreen(true);
             LoginState = LoginState.None;
         }
-
-        public void OnResetPassword() {
-            PixygonApi.Instance.ForgotPassword(_emailInput.text, ResetPasswordComplete, s => {
-                _accountErrors.SetErrorMessage("Recovery Failed", s, () => { _forgotPasswordPanel.SetActive(true); });
+        public void OnResetPassword(string email) {
+            _currentEmail = email;
+            PixygonApi.Instance.ForgotPassword(email, ResetPasswordComplete, s => {
+                _accountErrors.SetErrorMessage("Recovery Failed", s, () => { _forgotPasswordRequestPanel.ActivateScreen(true); });
                 SetError();
             });
             _loginLoadingScreen.SetActive(true);
-            _forgotPasswordPanel.SetActive(false);
             _loginPanel.ActivateScreen(false);
         }
-
-        [SerializeField] private ResetPasswordPanel _resetPasswordPanel;
-
         private void ResetPasswordComplete() {
             _loginLoadingScreen.SetActive(false);
-            _forgotPasswordPanel.SetActive(false);
+            _forgotPasswordRequestPanel.ActivateScreen(false);
             _resetPasswordPanel.ActivateScreen(true);
         }
         public void OnSendResetPassword(string hash, string newPass) {
-            PixygonApi.Instance.ForgotPasswordRecovery(_emailInput.text, hash, newPass, NewPasswordSet,
+            PixygonApi.Instance.ForgotPasswordRecovery(_currentEmail, hash, newPass, NewPasswordSet,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
                         () => { _resetPasswordPanel.ActivateScreen(true); });

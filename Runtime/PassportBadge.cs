@@ -1,4 +1,3 @@
-using Pixygon.Saving;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +6,7 @@ using UnityEngine.UI;
 namespace Pixygon.Passport
 {
     public class PassportBadge : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+        [SerializeField] private PassportCard _passportCard;
         [SerializeField] private TextMeshProUGUI _usernameText;
         [SerializeField] private TextMeshProUGUI _activityText;
         [SerializeField] private TextMeshProUGUI _subActivityText;
@@ -68,11 +68,13 @@ namespace Pixygon.Passport
         public void OnPointerExit(PointerEventData eventData) {
             _isOver = false;
         }
+
         public void OnClick() {
+            Debug.Log("Clicked on Passport Badge!");
             if (!PixygonApi.Instance.IsLoggedIn)
                 FindFirstObjectByType<AccountUI>()?.StartLogin();
             else
-                FindFirstObjectByType<PassportCard>()?.GetUser(PixygonApi.Instance.AccountData.user._id);
+                _passportCard?.GetUser(PixygonApi.Instance.AccountData.user._id);
         }
     }
 }
