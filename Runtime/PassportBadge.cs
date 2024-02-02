@@ -7,6 +7,7 @@ namespace Pixygon.Passport
 {
     public class PassportBadge : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
         [SerializeField] private PassportCard _passportCard;
+        [SerializeField] private AccountUI _accountUi;
         [SerializeField] private TextMeshProUGUI _usernameText;
         [SerializeField] private TextMeshProUGUI _activityText;
         [SerializeField] private TextMeshProUGUI _subActivityText;
@@ -72,7 +73,7 @@ namespace Pixygon.Passport
         public void OnClick() {
             Debug.Log("Clicked on Passport Badge!");
             if (!PixygonApi.Instance.IsLoggedIn)
-                FindFirstObjectByType<AccountUI>()?.StartLogin();
+                _accountUi?.StartLogin();
             else
                 _passportCard?.GetUser(PixygonApi.Instance.AccountData.user._id);
         }
