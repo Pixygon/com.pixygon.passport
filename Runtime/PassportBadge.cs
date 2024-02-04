@@ -29,8 +29,6 @@ namespace Pixygon.Passport
                 _usernameText.text = string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.displayName)
                     ? PixygonApi.Instance.AccountData.user.userName
                     : PixygonApi.Instance.AccountData.user.displayName;
-
-                Debug.Log("Time to get the pfp!");
                 _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
                 GetGame(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
             }

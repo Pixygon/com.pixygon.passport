@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Pixygon.Passport {
-    public class RegisterPanel : MonoBehaviour {
-        [SerializeField] private AccountUI _accountUi;
+    public class RegisterPanel : AccountPanel {
         [SerializeField] private TMP_InputField _signUpUserInput;
         [SerializeField] private TMP_InputField _signUpEmailInput;
         [SerializeField] private TMP_InputField _signUpPassInput;
@@ -21,14 +20,10 @@ namespace Pixygon.Passport {
         
         private bool _isInputVerified;
         
-        private void ClearInputs() {
+        protected override void ClearInputs() {
             _signUpUserInput.text = "";
             _signUpEmailInput.text = "";
             _signUpPassInput.text = "";
-        }
-        public void ActivateScreen(bool active) {
-            gameObject.SetActive(active);
-            if(active) ClearInputs();
         }
         public void VerifyInput() {
             _isInputVerified = true;
@@ -78,7 +73,6 @@ namespace Pixygon.Passport {
                 _signUpRememberMe.isOn);
             gameObject.SetActive(false);
         }
-
         public void Back() {
             _accountUi.CancelSignup();
         }

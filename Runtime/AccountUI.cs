@@ -31,6 +31,7 @@ namespace Pixygon.Passport {
         }
         
         private async void DoStartUpLogin() {
+            Debug.Log("Hello!");
             while (PixygonApi.Instance.IsLoggingIn) await Task.Yield();
             if (PixygonApi.Instance.IsLoggedIn)
                 CloseAccountScreen();
@@ -99,6 +100,7 @@ namespace Pixygon.Passport {
             LoginState = LoginState.None;
         }
         public void StartLogout() {
+            Debug.Log("Start Logout!");
             _logoutScreen.SetActive(true);
             gameObject.SetActive(true);
         }
