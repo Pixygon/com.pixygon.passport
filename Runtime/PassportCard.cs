@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Pixygon.Saving;
 using TMPro;
@@ -40,10 +41,10 @@ namespace Pixygon.Passport {
             _followersText.text = "";
             _levelText.text = "-";
             _pfpIcon.ClearIcon();
-            _gameTab.SetTab(0);
-            _streamerTab.SetTab(0);
-            _communityTab.SetTab(0);
-            _viewerTab.SetTab(0);
+            _gameTab.SetTab(0, 0);
+            _streamerTab.SetTab(0, 0);
+            _communityTab.SetTab(0, 0);
+            _viewerTab.SetTab(0, 0);
         }
         public async void GetUser(string id) {
             Clear();
@@ -65,18 +66,47 @@ namespace Pixygon.Passport {
 
             _bioText.text = user.bio;
             _followersText.text = $"{user.followers.Length} Followers";
-            _levelText.text = "0";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             //_gameIcon.sprite = _noGameSprite;
-            _gameTab.SetTab(user.gameXp);
-            _streamerTab.SetTab(user.streamerXp);
-            _communityTab.SetTab(user.communityXp);
-            _viewerTab.SetTab(user.viewerXp);
             _user = user;
+            CalculateLevels();
             CheckIfFollowing();
         }
 
+        private void CalculateLevels() {
+            var (gameLevel, gamePercentage) = CalculateLevelAndXP(_user.gameXp);
+            _gameTab.SetTab(gameLevel, gamePercentage);
+            var (streamerLevel, streamerPercentage) = CalculateLevelAndXP(_user.streamerXp);
+            _streamerTab.SetTab(streamerLevel, streamerPercentage);
+            var (communityLevel, communityPercentage) = CalculateLevelAndXP(_user.communityXp);
+            _communityTab.SetTab(communityLevel, communityPercentage);
+            var (viewerLevel, viewerPercentage) = CalculateLevelAndXP(_user.viewerXp);
+            _viewerTab.SetTab(viewerLevel, viewerPercentage);
+            var totalLevel = Mathf.FloorToInt(((gameLevel * 4) + (streamerLevel * 2) + (communityLevel * 2) + viewerLevel)/9f);
+            _levelText.text = totalLevel.ToString();
+        }
+        
+        private static (int level, float percentage) CalculateLevelAndXP(int experiencePoints) {
+            const int baseXp = 30;
+            const double xpIncreaseFactor = 2.3;
+            int TotalXpRequired(int currentLevel) =>
+                (int)Math.Floor(baseXp * Math.Pow(xpIncreaseFactor, currentLevel-1));
+            var level = 0;
+            while (experiencePoints >= TotalXpRequired(level + 1))
+                level++;
+            var remainingXp = experiencePoints- (level == 0 ? 0 : TotalXpRequired(level));
+            var xPToNextLevel = TotalXpRequired(level + 1) - (level == 0 ? 0 : TotalXpRequired(level));
+            var percentageToNextLevel = (float)remainingXp / (float)xPToNextLevel;
+            return (level+1, percentageToNextLevel);
+        }
+
         private void CheckIfFollowing() {
+            if (_user._id == PixygonApi.Instance.AccountData.user._id) {
+                _unfollowBtn.SetActive(false);
+                _followBtn.SetActive(false);
+                _followLoading.SetActive(false);
+                return;
+            }
             _followLoading.SetActive(true);
             if (PixygonApi.Instance.AccountData.user.following != null) {
                 if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
