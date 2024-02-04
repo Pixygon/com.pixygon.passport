@@ -92,7 +92,6 @@ namespace Pixygon.Passport {
         }
 
         public void Close() {
-            Debug.Log("Hello??");
             gameObject.SetActive(false);
         }
 

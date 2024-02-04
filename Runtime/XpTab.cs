@@ -13,6 +13,7 @@ namespace Pixygon.Passport
             var (level, remainingXP, percentage) = CalculateLevelAndXP(xp);
             _levelText.text = level.ToString();
             _xpImage.fillAmount = percentage;
+            Debug.Log(gameObject.name + " Level: " + level + " Xp: " + percentage);
         }
         
         private static (int level, int remainingXP, float percentage) CalculateLevelAndXP(int experiencePoints)
