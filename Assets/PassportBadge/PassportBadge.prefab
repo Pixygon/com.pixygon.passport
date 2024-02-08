@@ -168,7 +168,6 @@ RectTransform:
   m_Children:
   - {fileID: 2642239407672848368}
   - {fileID: 7185702284320165248}
-  - {fileID: 5734327934924283159}
   m_Father: {fileID: 6011154601936075112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
@@ -246,11 +245,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4871739026745554132}
-  m_Father: {fileID: 675620962173077451}
+  m_Father: {fileID: 7185702284320165248}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -25, y: 5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &877619483060704174
@@ -317,7 +316,7 @@ GameObject:
   - component: {fileID: 6863302424521799869}
   - component: {fileID: 1403059388647758093}
   m_Layer: 31
-  m_Name: Game (1)
+  m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,7 +333,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5734327934924283159}
   m_Father: {fileID: 675620962173077451}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -710,6 +710,7 @@ GameObject:
   - component: {fileID: 8128324428083275971}
   - component: {fileID: 2034246424583963123}
   - component: {fileID: 5540100082006894698}
+  - component: {fileID: 1926161657640566172}
   m_Layer: 31
   m_Name: PassportBadge
   m_TagString: Untagged
@@ -759,11 +760,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _passportCard: {fileID: 0}
+  _accountUi: {fileID: 0}
   _usernameText: {fileID: 9166119850057481306}
-  _activityText: {fileID: 7222785840441554600}
-  _subActivityText: {fileID: 3892110256650646562}
   _profilePic: {fileID: 1908137577085816603}
-  _gameIcon: {fileID: 2813101397909653270}
+  _passportStatus: {fileID: 1926161657640566172}
 --- !u!114 &8128324428083275971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,6 +872,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1926161657640566172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031763485739898949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a9d46e46b86d4048945c82a687f4c81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activityText: {fileID: 7222785840441554600}
+  _subactivityText: {fileID: 3892110256650646562}
+  _gameIcon: {fileID: 2813101397909653270}
+  _gameIconObject: {fileID: 2506986540357351570}
 --- !u!1 &4408229354961787466
 GameObject:
   m_ObjectHideFlags: 0

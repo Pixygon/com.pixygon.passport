@@ -9,10 +9,8 @@ namespace Pixygon.Passport
         [SerializeField] private PassportCard _passportCard;
         [SerializeField] private AccountUI _accountUi;
         [SerializeField] private TextMeshProUGUI _usernameText;
-        [SerializeField] private TextMeshProUGUI _activityText;
-        [SerializeField] private TextMeshProUGUI _subActivityText;
         [SerializeField] private IconGetter _profilePic;
-        [SerializeField] private Image _gameIcon;
+        [SerializeField] private PassportStatus _passportStatus;
 
         private float _openTimer;
         private bool _open = true;
@@ -20,23 +18,22 @@ namespace Pixygon.Passport
         public void Set() {
             if (!PixygonApi.Instance.IsLoggedIn) {
                 _usernameText.text = "Not logged in!";
-                _activityText.text = string.Empty;
-                _subActivityText.text = string.Empty;
                 _profilePic.ClearIcon();
-                _gameIcon.sprite = null;
-                _gameIcon.gameObject.SetActive(false);
+                _passportStatus.Clear();
             } else {
                 _usernameText.text = string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.displayName)
                     ? PixygonApi.Instance.AccountData.user.userName
                     : PixygonApi.Instance.AccountData.user.displayName;
                 _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
-                GetGame(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
+                _passportStatus.Set(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
+                //GetGame(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
             }
             _openTimer = 5f;
             _open = true;
             GetComponent<Animator>().SetBool("Open", true);
         }
 
+        /*
         private async void GetGame(string activity, string id) {
             _gameIcon.sprite = null;
             _gameIcon.gameObject.SetActive(false);
@@ -45,8 +42,9 @@ namespace Pixygon.Passport
                 _activityText.text = s[0];
                 _subActivityText.text = s[1];
             }
-            var game = PixygonApi.Instance.GetGame(id);
+            var game = PixygonApi.GetGame(id);
         }
+        */
 
         private void Update() {
             if (_open && !_isOver) {

@@ -151,7 +151,7 @@ namespace Pixygon.Passport {
             _verificationPanel.ActivateScreen(true);
         }
         public void OnVerify(string code) {
-            PixygonApi.Instance.VerifyUser(_currentUser, int.Parse(code),
+            PixygonApi.VerifyUser(_currentUser, int.Parse(code),
                 VerificationComplete, s => {
                     _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
                     SetError();
@@ -178,7 +178,7 @@ namespace Pixygon.Passport {
         }
         public void OnResetPassword(string email) {
             _currentEmail = email;
-            PixygonApi.Instance.ForgotPassword(email, ResetPasswordComplete, s => {
+            PixygonApi.ForgotPassword(email, ResetPasswordComplete, s => {
                 _accountErrors.SetErrorMessage("Recovery Failed", s, () => { _forgotPasswordRequestPanel.ActivateScreen(true); });
                 SetError();
             });
@@ -191,7 +191,7 @@ namespace Pixygon.Passport {
             _resetPasswordPanel.ActivateScreen(true);
         }
         public void OnSendResetPassword(string hash, string newPass) {
-            PixygonApi.Instance.ForgotPasswordRecovery(_currentEmail, hash, newPass, NewPasswordSet,
+            PixygonApi.ForgotPasswordRecovery(_currentEmail, hash, newPass, NewPasswordSet,
                 s => {
                     _accountErrors.SetErrorMessage("Recovery Failed", s,
                         () => { _resetPasswordPanel.ActivateScreen(true); });

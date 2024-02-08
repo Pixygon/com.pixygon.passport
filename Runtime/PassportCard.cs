@@ -8,15 +8,12 @@ using UnityEngine.UI;
 namespace Pixygon.Passport {
     public class PassportCard : MonoBehaviour {
         [SerializeField] private TextMeshProUGUI _usernameText;
-        [SerializeField] private TextMeshProUGUI _activityText;
-        [SerializeField] private TextMeshProUGUI _subactivityText;
         [SerializeField] private TextMeshProUGUI _bioText;
         [SerializeField] private TextMeshProUGUI _followersText;
         [SerializeField] private TextMeshProUGUI _levelText;
 
         [SerializeField] private IconGetter _pfpIcon;
         //[SerializeField] private Image _pfpIcon;
-        [SerializeField] private Image _gameIcon;
         [SerializeField] private Image[] _linkIcons;
 
         [SerializeField] private Sprite _noPfpSprite;
@@ -30,17 +27,17 @@ namespace Pixygon.Passport {
         [SerializeField] private XpTab _streamerTab;
         [SerializeField] private XpTab _communityTab;
         [SerializeField] private XpTab _viewerTab;
+        [SerializeField] private PassportStatus _passportStatus;
         
         private AccountData _user;
 
         private void Clear() {
             _usernameText.text = "Loading";
-            _activityText.text = "";
-            _subactivityText.text = "";
             _bioText.text = "";
             _followersText.text = "";
             _levelText.text = "-";
             _pfpIcon.ClearIcon();
+            _passportStatus.Clear();
             _gameTab.SetTab(0, 0);
             _streamerTab.SetTab(0, 0);
             _communityTab.SetTab(0, 0);
@@ -50,24 +47,17 @@ namespace Pixygon.Passport {
             Clear();
             gameObject.SetActive(true);
             _user = null;
-            var user = await PixygonApi.Instance.GetUser(id);
+            var user = await PixygonApi.GetUser(id);
             Set(user);
         }
         private void Set(AccountData user) {
             gameObject.SetActive(true);
             
             _usernameText.text = string.IsNullOrEmpty(user.displayName) ? user.userName : user.displayName;
-
-            if (!string.IsNullOrEmpty(user.latestActivity)) {
-                var s = user.latestActivity.Split('|');
-                _activityText.text = s[0];
-                _subactivityText.text = s[1];
-            }
-
+            _passportStatus.Set(user.latestActivity, user.latestGame);
             _bioText.text = user.bio;
             _followersText.text = $"{user.followers.Length} Followers";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
-            //_gameIcon.sprite = _noGameSprite;
             _user = user;
             CalculateLevels();
             CheckIfFollowing();

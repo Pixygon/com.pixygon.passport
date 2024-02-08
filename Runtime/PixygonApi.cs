@@ -20,6 +20,10 @@ namespace Pixygon.Passport {
             if (AccountData == null) return;
             SaveManager.SettingsSave._user = AccountData.user;
             SaveManager.SettingsSave._isLoggedIn = true;
+            SetLatestActivity("Online", "", "");
+        }
+        private void OnApplicationQuit() {
+            SetLatestActivity("Offline", "", "");
         }
         public async void StartLogin(string user, string pass, bool rememberMe = false, Action onLogin = null, Action<ErrorResponse> onFail = null) {
             if (rememberMe) {
@@ -49,7 +53,7 @@ namespace Pixygon.Passport {
             }
             onSignup?.Invoke();
         }
-        public async void VerifyUser(string user, int code, Action onVerify = null, Action<ErrorResponse> onFail = null) {
+        public static async void VerifyUser(string user, int code, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/verify", JsonUtility.ToJson(new VerifyData(user, code)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
@@ -57,7 +61,7 @@ namespace Pixygon.Passport {
             }
             onVerify?.Invoke();
         }
-        public async void ForgotPassword(string email, Action onVerify = null, Action<ErrorResponse> onFail = null) {
+        public static async void ForgotPassword(string email, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/forgotPassword", JsonUtility.ToJson(new RecoveryData(email)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
@@ -65,7 +69,7 @@ namespace Pixygon.Passport {
             }
             onVerify?.Invoke();
         }
-        public async void ForgotPasswordRecovery(string email, string hash, string newPass, Action onVerify = null, Action<ErrorResponse> onFail = null) {
+        public static async void ForgotPasswordRecovery(string email, string hash, string newPass, Action onVerify = null, Action<ErrorResponse> onFail = null) {
             var www = await PostWWW("auth/forgotPasswordRecovery", JsonUtility.ToJson(new RecoverySubmitData(email, hash, newPass)));
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
@@ -123,7 +127,6 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/viewerXp/{i}/{id}", "", true);
             Debug.Log("Patching Viewer XP: " + www.downloadHandler.text);
         }
-
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
             PlayerPrefs.DeleteKey("RememberMe");
             PlayerPrefs.DeleteKey("Username");
@@ -140,9 +143,7 @@ namespace Pixygon.Passport {
             }
             onVerify?.Invoke();
         }
-
-
-        public async Task<AccountData> GetUser(string userId) {
+        public static async Task<AccountData> GetUser(string userId) {
             var www = await GetWWW($"users/view/{userId}");
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 Debug.Log("GET USER ERROR!! " + www.error + " and this " + www.downloadHandler.text);
@@ -213,10 +214,6 @@ namespace Pixygon.Passport {
             }
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
-
-
-
-
         public void StartLogout() {
             PlayerPrefs.DeleteKey("RememberMe");
             PlayerPrefs.DeleteKey("Username");
@@ -309,8 +306,8 @@ namespace Pixygon.Passport {
             Debug.Log(www.downloadHandler.text);
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
-        public async Task<string> GetGame(string gameId) {
-            var www = await GetWWW($"games/{gameId}");
+        public static async Task<string> GetGame(string gameId) {
+            var www = await GetWWW($"client/game/{gameId}");
             if (!string.IsNullOrWhiteSpace(www.error))
             {
                 Debug.Log("GET FOLLOWING ERROR!! " + www.error + " and this " + www.downloadHandler.text);
@@ -335,7 +332,7 @@ namespace Pixygon.Passport {
             //onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
         }
 
-        private async static Task<UnityWebRequest> GetWWW(string path, string token = "") {
+        private static async Task<UnityWebRequest> GetWWW(string path, string token = "") {
             var www = UnityWebRequest.Get(PixygonServerURL + path);
             www.timeout = 60;
             if (token != string.Empty)
@@ -345,7 +342,7 @@ namespace Pixygon.Passport {
                 await Task.Yield();
             return www;
         }
-        private async static Task<UnityWebRequest> PostWWW(string path, string body, bool patch = false, string token = "") {
+        private static async Task<UnityWebRequest> PostWWW(string path, string body, bool patch = false, string token = "") {
             var www = UnityWebRequest.Put(PixygonServerURL + path, body);
             www.timeout = 30;
             www.method = patch ? "PATCH" : "POST";
@@ -357,8 +354,7 @@ namespace Pixygon.Passport {
                 await Task.Yield();
             return www;
         }
-
-        public async Task RefreshUser() {
+        private async Task RefreshUser() {
             AccountData.user = await GetUser(AccountData.user._id);
             SaveManager.SettingsSave._user = AccountData.user;
             Debug.Log("Refreshed user!!");
