@@ -224,7 +224,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1280
-        y: 1154
+        y: 1152
         width: 128
         height: 128
       alignment: 0
@@ -245,7 +245,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1280
-        y: 1026
+        y: 1024
         width: 128
         height: 128
       alignment: 0
@@ -266,7 +266,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1408
-        y: 1026
+        y: 1024
         width: 128
         height: 128
       alignment: 0
@@ -287,7 +287,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1408
-        y: 1154
+        y: 1152
         width: 128
         height: 128
       alignment: 0
@@ -329,7 +329,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1280
-        y: 898
+        y: 896
         width: 128
         height: 128
       alignment: 0
@@ -350,7 +350,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1408
-        y: 898
+        y: 896
         width: 128
         height: 128
       alignment: 0
@@ -371,7 +371,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1408
-        y: 770
+        y: 768
         width: 128
         height: 128
       alignment: 0
@@ -392,7 +392,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1280
-        y: 770
+        y: 768
         width: 128
         height: 128
       alignment: 0
@@ -476,7 +476,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1536
-        y: 1026
+        y: 1024
         width: 128
         height: 128
       alignment: 0
@@ -497,7 +497,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1536
-        y: 1154
+        y: 1152
         width: 128
         height: 128
       alignment: 0
@@ -518,7 +518,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1664
-        y: 1154
+        y: 1152
         width: 128
         height: 128
       alignment: 0
@@ -539,7 +539,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1792
-        y: 1154
+        y: 1152
         width: 128
         height: 128
       alignment: 0
@@ -602,7 +602,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1664
-        y: 1026
+        y: 1024
         width: 128
         height: 128
       alignment: 0
@@ -702,6 +702,237 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Icon_Gold
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4410807a88038f641bc3f5d3b7cf6693
+      internalID: -627198558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Silver
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f69da1f16fce6ff4a8f889cd48fe5117
+      internalID: 1648525339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Highscores
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 819f20bfcf873ae4bad1a07de498e15a
+      internalID: 454258205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Star
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1408
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf7dae3f8f4998245a8fecd8aa009844
+      internalID: -333623156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Bronze
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9b4dd8d47fe34942a53b7737fee48c4
+      internalID: 38969822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1408
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e7dbe0fc3a593d4491b29db47412110
+      internalID: 1867446162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Filter
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61b29be07495b9749aa5345e9476cbc3
+      internalID: 639071733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Filter_Off
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1280
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94e436a4db36b5f44880df24fd0e780a
+      internalID: 1093844387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1408
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6ebb8025dce69e4da244fc99f95fc8c
+      internalID: -876418902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 1408
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8af16c474676f3c4ba52f7a40e77da59
+      internalID: -2041960181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Search
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1408
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb2ed98d136203042a888b61e8bae828
+      internalID: 962981883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -716,18 +947,26 @@ TextureImporter:
       Bg_Butterfly: -110415368
       Bg_Gradient: -1716111823
       Icon_Back: 436502366
+      Icon_Bronze: 38969822
       Icon_Butterfly: -488149933
       Icon_Circle: 223225269
       Icon_CommunityXp: 610598128
+      Icon_Filter: 639071733
+      Icon_Filter_Off: 1093844387
       Icon_GameXp: 427744368
+      Icon_Gold: -627198558
       Icon_Heart_Broken: 1991789660
       Icon_Heart_Empty: -1570198069
       Icon_Heart_Whole: -1785105754
+      Icon_Highscores: 454258205
       Icon_LB: 848046415
       Icon_Loading: 1808679385
       Icon_NoPfp: -1049999649
       Icon_RB: 1430610116
+      Icon_Search: 962981883
       Icon_Settings: -208777730
+      Icon_Silver: 1648525339
+      Icon_Star: -333623156
       Icon_StreamerXp: 1317471524
       Icon_Style: 1146898420
       Icon_Trophy: -1386970370
@@ -736,6 +975,9 @@ TextureImporter:
       Logo_Butterfly_Blue: 1656897182
       Logo_Butterfly_Purple: -1761631957
       MicroSpritesheet_1: 282037310
+      MicroSpritesheet_10: -2041960181
+      MicroSpritesheet_6: 1867446162
+      MicroSpritesheet_9: -876418902
       Panel_Circular: 1252721734
       Panel_Gradient: 1650862832
       Panel_Rounded: 352174192
