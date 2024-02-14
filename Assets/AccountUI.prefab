@@ -11918,8 +11918,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AccountErrors, Assembly-CSharp
+      - m_Target: {fileID: 8939716097681311881}
+        m_TargetAssemblyTypeName: Pixygon.Passport.ErrorPanel, Pixygon.Passport
         m_MethodName: Close
         m_Mode: 1
         m_Arguments:
