@@ -622,10 +622,10 @@ TextureImporter:
       name: Icon_GameXp
       rect:
         serializedVersion: 2
-        x: 1937
-        y: 1037
-        width: 223
-        height: 229
+        x: 1920
+        y: 1024
+        width: 256
+        height: 256
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -643,10 +643,10 @@ TextureImporter:
       name: Icon_StreamerXp
       rect:
         serializedVersion: 2
-        x: 2193
-        y: 1037
-        width: 223
-        height: 229
+        x: 2176
+        y: 1024
+        width: 256
+        height: 256
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -664,10 +664,10 @@ TextureImporter:
       name: Icon_ViewerXp
       rect:
         serializedVersion: 2
-        x: 2193
-        y: 781
-        width: 223
-        height: 229
+        x: 2176
+        y: 768
+        width: 256
+        height: 256
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -685,10 +685,10 @@ TextureImporter:
       name: Icon_CommunityXp
       rect:
         serializedVersion: 2
-        x: 1937
-        y: 781
-        width: 223
-        height: 229
+        x: 1920
+        y: 768
+        width: 256
+        height: 256
       alignment: 2
       pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -854,7 +854,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1536
-        y: 1280
+        y: 1281
         width: 128
         height: 128
       alignment: 0
@@ -921,7 +921,7 @@ TextureImporter:
         width: 128
         height: 128
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -929,6 +929,153 @@ TextureImporter:
       bones: []
       spriteID: eb2ed98d136203042a888b61e8bae828
       internalID: 962981883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Person
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf28366503190cd4cb321680d0c0ae5f
+      internalID: -590533250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Inventory
+      rect:
+        serializedVersion: 2
+        x: 1792
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e71d03f6b0e3d2148a0e3fb3c19c8177
+      internalID: -71895631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3840
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a00647c317eda574c9412f391132f6e8
+      internalID: -1377254818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3840
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9af13e49e511a21479d46da29b77c368
+      internalID: -1765909439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3584
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cd9b248a98ff224ead5cc4e8cfb8c8d
+      internalID: -976626955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3584
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a3c81bb0bdfacb47beabb3eef8071be
+      internalID: -863971738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MicroSpritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3328
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ad1a5d44f63e9f4ea806ec694b1b05a
+      internalID: -1987575547
       vertices: []
       indices: 
       edges: []
@@ -959,9 +1106,11 @@ TextureImporter:
       Icon_Heart_Empty: -1570198069
       Icon_Heart_Whole: -1785105754
       Icon_Highscores: 454258205
+      Icon_Inventory: -71895631
       Icon_LB: 848046415
       Icon_Loading: 1808679385
       Icon_NoPfp: -1049999649
+      Icon_Person: -590533250
       Icon_RB: 1430610116
       Icon_Search: 962981883
       Icon_Settings: -208777730
@@ -974,8 +1123,13 @@ TextureImporter:
       Icon_X: -858626023
       Logo_Butterfly_Blue: 1656897182
       Logo_Butterfly_Purple: -1761631957
+      MicroSpritesheet_0: -1377254818
       MicroSpritesheet_1: 282037310
       MicroSpritesheet_10: -2041960181
+      MicroSpritesheet_2: -1765909439
+      MicroSpritesheet_3: -976626955
+      MicroSpritesheet_4: -863971738
+      MicroSpritesheet_5: -1987575547
       MicroSpritesheet_6: 1867446162
       MicroSpritesheet_9: -876418902
       Panel_Circular: 1252721734
