@@ -48,6 +48,7 @@ namespace Pixygon.Passport {
                     CloseAccountScreen();
             }
             else {
+                Debug.Log("Time to log in!");
                 gameObject.SetActive(true);
                 _loginPanel.ActivateScreen(!PixygonApi.Instance.IsLoggingIn);
                 _loginLoadingScreen.SetActive(PixygonApi.Instance.IsLoggingIn);
@@ -109,7 +110,6 @@ namespace Pixygon.Passport {
             LoginState = LoginState.Error;
             _loginLoadingScreen.SetActive(false);
         }
-
         public void Signup(string user, string email, string pass, bool rememberMe) {
             PixygonApi.Instance.StartSignup(user, email, pass,
                 rememberMe, SignupComplete, s => {
@@ -137,6 +137,8 @@ namespace Pixygon.Passport {
         private void VerificationComplete() {
             if (!PixygonApi.Instance.IsLoggedIn) return;
             _verificationPanel.ActivateScreen(false);
+            _loginLoadingScreen.SetActive(false);
+            Debug.Log("Verified...!");
             StartLogin();
             //PopulateAccountScreen();
             //CloseAccountScreen();
