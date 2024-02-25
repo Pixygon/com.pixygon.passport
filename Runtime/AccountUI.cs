@@ -35,7 +35,6 @@ namespace Pixygon.Passport {
             if (PixygonApi.Instance.IsLoggedIn)
                 CloseAccountScreen();
             else {
-                Debug.Log("Hello!!");
                 if(_showSignInAtLaunch)
                     StartLogin();
                 else
@@ -43,6 +42,7 @@ namespace Pixygon.Passport {
             }
         }
         public void StartLogin() {
+            Debug.Log("Why was this triggered?!");
             LoginState = LoginState.Login;
             if (PixygonApi.Instance.IsLoggedIn) {
                 if (LoginState == LoginState.Login)
