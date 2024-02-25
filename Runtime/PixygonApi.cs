@@ -46,6 +46,7 @@ namespace Pixygon.Passport {
                 PlayerPrefs.SetString("Password", pass);
                 PlayerPrefs.Save();
             }
+            await Signup(user, email, pass, onFail);
             /*
             AccountData = await Signup(user, email, pass, onFail);
             if (AccountData != null) {

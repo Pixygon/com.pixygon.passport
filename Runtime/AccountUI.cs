@@ -131,7 +131,6 @@ namespace Pixygon.Passport {
                     _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
                     SetError();
                 });
-            _currentUser = "";
             _loginLoadingScreen.SetActive(true);
             _registerPanel.ActivateScreen(false);
         }
