@@ -69,7 +69,7 @@ namespace Pixygon.Passport {
             if (!_isInputVerified) return;
             _accountUi.Signup(_signUpUserInput.text, _signUpEmailInput.text,
                 _signUpPassInput.text,
-                _signUpRememberMe.isOn);
+                false);
             gameObject.SetActive(false);
         }
         public void Back() {
