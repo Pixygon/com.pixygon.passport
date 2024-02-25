@@ -54,8 +54,11 @@ namespace Pixygon.Passport {
                     _passwordVerified.SetActive(true);
                 }
             }
-            if(!_toggleTerms.isOn)
+            if (!_isInputVerified) return;
+            if(!_toggleTerms.isOn) {
+                _passwordErrorText.text = "<color=#FF958B>Please accept Terms and Conditions to continue!";
                 _isInputVerified = false;
+            }
 
             Debug.Log("Input verified: " + _isInputVerified);
             if (!_isInputVerified) return;
