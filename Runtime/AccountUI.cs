@@ -132,11 +132,10 @@ namespace Pixygon.Passport {
                     SetError();
                 });
             _loginLoadingScreen.SetActive(true);
-            _registerPanel.ActivateScreen(false);
+            _verificationPanel.ActivateScreen(false);
         }
         private void VerificationComplete() {
             if (!PixygonApi.Instance.IsLoggedIn) return;
-            _verificationPanel.ActivateScreen(false);
             _loginLoadingScreen.SetActive(false);
             Debug.Log("Verified...!");
             StartLogin();
