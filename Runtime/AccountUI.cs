@@ -31,8 +31,7 @@ namespace Pixygon.Passport {
         }
         
         private async void DoStartUpLogin() {
-            Debug.Log("Hello!");
-            while (PixygonApi.Instance.IsLoggingIn) await Task.Yield();
+            while (PixygonApi.Instance.IsLoggingIn || LoginState == LoginState.Signup || LoginState == LoginState.Validate) await Task.Yield();
             if (PixygonApi.Instance.IsLoggedIn)
                 CloseAccountScreen();
             else {
@@ -81,7 +80,6 @@ namespace Pixygon.Passport {
             _registerPanel.ActivateScreen(true);
             LoginState = LoginState.Signup;
         }
-
         public void CancelSignup() {
             _registerPanel.ActivateScreen(false);
             StartLogin();
@@ -115,7 +113,6 @@ namespace Pixygon.Passport {
             _loginLoadingScreen.SetActive(false);
             CloseAccountScreen();
         }
-
         public void Login(string user, string pass, bool rememberMe) {
             PixygonApi.Instance.StartLogin(user, pass, rememberMe, LoginComplete,
                 s => {
@@ -146,7 +143,7 @@ namespace Pixygon.Passport {
             _registerPanel.ActivateScreen(false);
         }
         private void SignupComplete() {
-            Debug.Log("This is wrong!");
+            LoginState = LoginState.Validate;
             _loginLoadingScreen.SetActive(false);
             _verificationPanel.ActivateScreen(true);
         }
