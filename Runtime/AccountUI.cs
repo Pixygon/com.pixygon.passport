@@ -35,33 +35,11 @@ namespace Pixygon.Passport {
             if (PixygonApi.Instance.IsLoggedIn)
                 CloseAccountScreen();
             else {
+                Debug.Log("Hello!!");
                 if(_showSignInAtLaunch)
                     StartLogin();
                 else
                     CloseAccountScreen();
-            }
-        }
-        private void Update() {
-            return;
-            switch (LoginState) {
-                case LoginState.Startup:
-                    if (PixygonApi.Instance.IsLoggingIn) return;
-                    if (PixygonApi.Instance.IsLoggedIn)
-                        CloseAccountScreen();
-                    else {
-                        StartLogin();
-                    }
-
-                    break;
-                case LoginState.Login:
-                    if (PixygonApi.Instance.IsLoggingIn) return;
-                    if (PixygonApi.Instance.IsLoggedIn)
-                        CloseAccountScreen();
-                    else {
-                        StartLogin();
-                    }
-
-                    break;
             }
         }
         public void StartLogin() {
