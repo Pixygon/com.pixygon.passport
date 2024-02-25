@@ -46,11 +46,13 @@ namespace Pixygon.Passport {
                 PlayerPrefs.SetString("Password", pass);
                 PlayerPrefs.Save();
             }
+            /*
             AccountData = await Signup(user, email, pass, onFail);
             if (AccountData != null) {
                 SaveManager.SettingsSave._user = AccountData.user;
                 SaveManager.SettingsSave._isLoggedIn = true;
             }
+            */
             onSignup?.Invoke();
         }
         public static async void VerifyUser(string user, int code, Action onVerify = null, Action<ErrorResponse> onFail = null) {
@@ -260,7 +262,8 @@ namespace Pixygon.Passport {
                 onFail?.Invoke( new ErrorResponse(www.error, www.downloadHandler.text));
                 return null;
             }
-            IsLoggedIn = true;
+            IsLoggedIn = false;
+            IsLoggingIn = false;
             return JsonUtility.FromJson<LoginToken>(www.downloadHandler.text);
         }
         public async void GetUsers() {

@@ -42,7 +42,6 @@ namespace Pixygon.Passport {
             }
         }
         public void StartLogin() {
-            Debug.Log("Why was this triggered?!");
             LoginState = LoginState.Login;
             if (PixygonApi.Instance.IsLoggedIn) {
                 if (LoginState == LoginState.Login)
@@ -55,6 +54,7 @@ namespace Pixygon.Passport {
             }
         }
         public void StartRegister() {
+            _loginPanel.ActivateScreen(false);
             _registerPanel.ActivateScreen(true);
             LoginState = LoginState.Signup;
         }
@@ -131,14 +131,16 @@ namespace Pixygon.Passport {
                     _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
                     SetError();
                 });
+            _currentUser = "";
             _loginLoadingScreen.SetActive(true);
             _registerPanel.ActivateScreen(false);
         }
         private void VerificationComplete() {
             if (!PixygonApi.Instance.IsLoggedIn) return;
             _verificationPanel.ActivateScreen(false);
-            PopulateAccountScreen();
-            CloseAccountScreen();
+            StartLogin();
+            //PopulateAccountScreen();
+            //CloseAccountScreen();
         }
         public void OpenPasswordReset() {
             _forgotPasswordRequestPanel.ActivateScreen(true);
