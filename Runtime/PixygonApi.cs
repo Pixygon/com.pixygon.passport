@@ -365,6 +365,32 @@ namespace Pixygon.Passport {
             //SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
+        public async Task<string> DepositItems(ItemBoxSlot[] items) {
+            Debug.Log("Deposit Items");
+            var www = await PostWWW($"users/depositItems/{AccountData.user._id}",JsonUtility.ToJson(items), false, AccountData.token);
+            if (www.error != null) {
+                Debug.Log(www.error + "\n" + www.downloadHandler.text);
+            }
+            await RefreshUser();
+            return "{\"_results\":" + www.downloadHandler.text + "}";
+        }
+
+        public async Task<ItemBoxSlot[]> WithdrawItems(ItemBoxSlot[] items) {
+            Debug.Log("Deposit Items");
+            var www = await PostWWW($"users/withdrawItems/{AccountData.user._id}",JsonUtility.ToJson(items), false, AccountData.token);
+            if (www.error != null) {
+                Debug.Log(www.error + "\n" + www.downloadHandler.text);
+            }
+            await RefreshUser();
+            return JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
+        }
+    }
+
+    [Serializable]
+    public class ItemBoxSlot {
+        public int itemId;
+        public string title;
+        public int quantity;
     }
 
     [Serializable]
