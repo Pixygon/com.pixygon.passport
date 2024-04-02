@@ -373,17 +373,18 @@ namespace Pixygon.Passport {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
             await RefreshUser();
-            return "{\"slots\":" + www.downloadHandler.text + "}";
+            return www.downloadHandler.text;
         }
 
-        public async Task<ItemBoxSlot[]> WithdrawItems(ItemBoxSlot[] items) {
-            Debug.Log("Deposit Items");
-            var www = await PostWWW($"users/withdrawItems/{AccountData.user._id}",JsonUtility.ToJson(items), false, AccountData.token);
+        public async Task<string> WithdrawItems(ItemBoxSlots items) {
+            var itemString = JsonUtility.ToJson(items);
+            Debug.Log("Withdraw Items");
+            var www = await PostWWW($"users/withdrawItems/{AccountData.user._id}",itemString, false, AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
             await RefreshUser();
-            return JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
+            return www.downloadHandler.text;
         }
         public async Task<ItemBoxSlot[]> GetItems() {
             Debug.Log("Get Items");
