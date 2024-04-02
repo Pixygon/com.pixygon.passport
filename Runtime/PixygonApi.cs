@@ -386,7 +386,7 @@ namespace Pixygon.Passport {
         }
 
         public async Task<ItemBoxSlot[]> GetItems() {
-            Debug.Log("Deposit Items");
+            Debug.Log("Get Items");
             var www = await GetWWW($"users/getItemBox/{AccountData.user._id}",AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
@@ -402,7 +402,7 @@ namespace Pixygon.Passport {
         public int quantity;
 
         public ItemBoxSlot(string itemId, string title, int quantity) {
-            this.itemId = this.itemId;
+            this.itemId = itemId;
             this.title = title;
             this.quantity = quantity;
         }
