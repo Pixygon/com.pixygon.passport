@@ -365,7 +365,7 @@ namespace Pixygon.Passport {
             //SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
-        public async Task<string> DepositItems(ItemBoxSlot[] items) {
+        public async Task<string> DepositItems(ItemBoxSlots items) {
             var itemString = JsonUtility.ToJson(items);
             Debug.Log("Deposit Items: " + itemString);
             var www = await PostWWW($"users/depositItems/{AccountData.user._id}",itemString, false, AccountData.token);
