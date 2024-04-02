@@ -366,9 +366,7 @@ namespace Pixygon.Passport {
         }
 
         public async Task<string> MintAsset(ItemBoxSlots items) {
-            var itemString = JsonUtility.ToJson(items);
-            Debug.Log("Mint asset!");
-            var www = await PostWWW($"users/mintAssets",itemString, false, AccountData.token);
+            var www = await PostWWW($"users/mintAssets", JsonUtility.ToJson(items), false, AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
@@ -414,11 +412,13 @@ namespace Pixygon.Passport {
     public class ItemBoxSlot {
         public string itemId;
         public string title;
+        public int template;
         public int quantity;
 
-        public ItemBoxSlot(string i, string t, int q) {
+        public ItemBoxSlot(string i, string t, int temp, int q) {
             itemId = i;
             title = t;
+            template = temp; 
             quantity = q;
         }
     }
