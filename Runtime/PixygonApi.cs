@@ -391,7 +391,7 @@ namespace Pixygon.Passport {
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
-
+            Debug.Log(">" + www.downloadHandler.text + "<");
             return www.downloadHandler.text.Length == 0 ? null : JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
         }
     }
