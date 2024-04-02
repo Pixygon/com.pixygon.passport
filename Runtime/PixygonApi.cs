@@ -366,9 +366,8 @@ namespace Pixygon.Passport {
         }
 
         public async Task<string> DepositItems(ItemBoxSlot[] items) {
-            Debug.Log("Deposit Items");
             var itemString = JsonUtility.ToJson(items);
-            Debug.Log(itemString);
+            Debug.Log("Deposit Items: " + itemString);
             var www = await PostWWW($"users/depositItems/{AccountData.user._id}",itemString, false, AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
@@ -386,7 +385,6 @@ namespace Pixygon.Passport {
             await RefreshUser();
             return JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
         }
-
         public async Task<ItemBoxSlot[]> GetItems() {
             Debug.Log("Get Items");
             var www = await GetWWW($"users/getItemBox/{AccountData.user._id}",AccountData.token);
