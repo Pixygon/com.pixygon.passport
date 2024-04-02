@@ -372,7 +372,7 @@ namespace Pixygon.Passport {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
             await RefreshUser();
-            return "{\"_results\":" + www.downloadHandler.text + "}";
+            return "{\"slots\":" + www.downloadHandler.text + "}";
         }
 
         public async Task<ItemBoxSlot[]> WithdrawItems(ItemBoxSlot[] items) {
@@ -391,8 +391,7 @@ namespace Pixygon.Passport {
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
-            Debug.Log(">" + www.downloadHandler.text + "<");
-            return www.downloadHandler.text.Length == 0 ? null : JsonUtility.FromJson<ItemBoxSlots>("{\"slots\":" + www.downloadHandler.text + "}").slots;
+            return JsonUtility.FromJson<ItemBoxSlots>("{\"slots\":" + www.downloadHandler.text + "}").slots;
         }
     }
 
