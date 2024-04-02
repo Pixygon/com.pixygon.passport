@@ -365,10 +365,20 @@ namespace Pixygon.Passport {
             //SaveManager.SettingsSave._user.waxWallet = AccountData.user.waxWallet;
         }
 
+        public async Task<string> MintAsset(ItemBoxSlots items) {
+            var itemString = JsonUtility.ToJson(items);
+            Debug.Log("Mint asset!");
+            var www = await PostWWW($"users/mintAssets",itemString, false, AccountData.token);
+            if (www.error != null) {
+                Debug.Log(www.error + "\n" + www.downloadHandler.text);
+            }
+            await RefreshUser();
+            return www.downloadHandler.text;
+        }
         public async Task<string> DepositItems(ItemBoxSlots items) {
             var itemString = JsonUtility.ToJson(items);
             Debug.Log("Deposit Items: " + itemString);
-            var www = await PostWWW($"users/depositItems/{AccountData.user._id}",itemString, false, AccountData.token);
+            var www = await PostWWW($"users/depositItems",itemString, false, AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
@@ -379,7 +389,7 @@ namespace Pixygon.Passport {
         public async Task<string> WithdrawItems(ItemBoxSlots items) {
             var itemString = JsonUtility.ToJson(items);
             Debug.Log("Withdraw Items");
-            var www = await PostWWW($"users/withdrawItems/{AccountData.user._id}",itemString, false, AccountData.token);
+            var www = await PostWWW($"users/withdrawItems",itemString, false, AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
@@ -388,7 +398,7 @@ namespace Pixygon.Passport {
         }
         public async Task<ItemBoxSlot[]> GetItems() {
             Debug.Log("Get Items");
-            var www = await GetWWW($"users/getItemBox/{AccountData.user._id}",AccountData.token);
+            var www = await GetWWW($"users/getItemBox",AccountData.token);
             if (www.error != null) {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
