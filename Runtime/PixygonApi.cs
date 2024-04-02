@@ -392,10 +392,14 @@ namespace Pixygon.Passport {
                 Debug.Log(www.error + "\n" + www.downloadHandler.text);
             }
             Debug.Log(">" + www.downloadHandler.text + "<");
-            return www.downloadHandler.text.Length == 0 ? null : JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
+            return www.downloadHandler.text.Length == 0 ? null : JsonUtility.FromJson<ItemBoxSlots>("{\"slots\":" + www.downloadHandler.text + "}").slots;
         }
     }
 
+    [Serializable]
+    public class ItemBoxSlots {
+        public ItemBoxSlot[] slots;
+    }
     [Serializable]
     public class ItemBoxSlot {
         public string itemId;
