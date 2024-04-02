@@ -405,10 +405,10 @@ namespace Pixygon.Passport {
         public string title;
         public int quantity;
 
-        public ItemBoxSlot(string itemId, string title, int quantity) {
-            this.itemId = itemId;
-            this.title = title;
-            this.quantity = quantity;
+        public ItemBoxSlot(string i, string t, int q) {
+            itemId = i;
+            title = t;
+            quantity = q;
         }
     }
 
