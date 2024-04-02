@@ -384,6 +384,15 @@ namespace Pixygon.Passport {
             await RefreshUser();
             return JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
         }
+
+        public async Task<ItemBoxSlot[]> GetItems(ItemBoxSlot[] items) {
+            Debug.Log("Deposit Items");
+            var www = await GetWWW($"users/getItemBox/{AccountData.user._id}",AccountData.token);
+            if (www.error != null) {
+                Debug.Log(www.error + "\n" + www.downloadHandler.text);
+            }
+            return JsonUtility.FromJson<ItemBoxSlot[]>(www.downloadHandler.text);
+        }
     }
 
     [Serializable]
