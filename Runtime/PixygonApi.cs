@@ -397,9 +397,15 @@ namespace Pixygon.Passport {
 
     [Serializable]
     public class ItemBoxSlot {
-        public int itemId;
+        public string itemId;
         public string title;
         public int quantity;
+
+        public ItemBoxSlot(string itemId, string title, int quantity) {
+            this.itemId = this.itemId;
+            this.title = title;
+            this.quantity = quantity;
+        }
     }
 
     [Serializable]
