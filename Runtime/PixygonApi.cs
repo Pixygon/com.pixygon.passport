@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace Pixygon.Passport {
     public class PixygonApi : MonoBehaviour {
-        private const string PixygonServerURL = "https://pixygon-server.onrender.com/";
+        private const string PixygonServerURL = "https://pixygon-server.onrender.com/v1/";
         public bool IsLoggedIn { get; private set; }
         public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
