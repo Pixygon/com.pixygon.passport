@@ -17,7 +17,10 @@ namespace Pixygon.Passport {
             if (PlayerPrefs.GetInt("RememberMe") != 1) return;
             IsLoggingIn = true;
             AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
-            if (AccountData == null) return;
+            if (AccountData == null) {
+                IsLoggingIn = false;
+                return;
+            }
             SaveManager.SettingsSave._user = AccountData.user;
             SaveManager.SettingsSave._isLoggedIn = true;
             SetLatestActivity("Online", "", "");
