@@ -26,7 +26,7 @@ namespace Pixygon.Passport {
             else
             {
                 Debug.Log("Logged in!");
-                Debug.Log(AccountData.toString());
+                Debug.Log(AccountData);
                 Debug.Log(AccountData.token);
             }
             SaveManager.SettingsSave._user = AccountData.user;
