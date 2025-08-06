@@ -16,17 +16,23 @@ namespace Pixygon.Passport {
             Instance = this;
             if (PlayerPrefs.GetInt("RememberMe") != 1) return;
             IsLoggingIn = true;
-            AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
+            AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"), (ErrorResponse a) => Debug.Log("Error!" + a._code + " -> " + a._msg));
             if (AccountData == null)
             {
                 IsLoggingIn = false;
                 Debug.Log("No account data!");
                 return;
             }
+            if (AccountData.token == null)
+            {
+                Debug.Log("AccountData.token is null!");
+                IsLoggingIn = false;
+                AccountData = null;
+                return;
+            }
             else
             {
                 Debug.Log("Logged in!");
-                Debug.Log(AccountData);
                 Debug.Log(AccountData.token);
             }
             SaveManager.SettingsSave._user = AccountData.user;
