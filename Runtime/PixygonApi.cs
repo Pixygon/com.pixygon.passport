@@ -6,54 +6,155 @@ using UnityEngine.Networking;
 
 namespace Pixygon.Passport {
     public class PixygonApi : MonoBehaviour {
-        private const string PixygonServerURL = "https://pixygon-server.onrender.com/v1/";
+        // Production API. The old onrender host stays as a fallback in case
+        // the new DNS hasn't propagated for a particular user / region; if we
+        // ever need a staging swap, this is the single line to touch.
+        private const string PixygonServerURL = "https://api.pixygon.io/v1/";
         public bool IsLoggedIn { get; private set; }
         public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
         public static PixygonApi Instance;
+
+        /// <summary>
+        /// Fired whenever the login state, account data, or owned games list
+        /// changes. Consumers downstream of Passport (e.g. Dreadwager's
+        /// PaidEdition gate) listen so they can react to a mid-session login
+        /// without re-loading the scene.
+        /// </summary>
+        public event Action OnLoginStateChanged;
+
+        // Remember-me prefs keys. We previously stored the user's password
+        // in PlayerPrefs — that's both a security smell and a fragile coupling
+        // to "the password the user typed once". We now persist the JWT-style
+        // token + userId and rehydrate the session by refreshing the token,
+        // not by re-logging in with the password.
+        private const string PrefRememberMe = "Pixygon.RememberMe";
+        private const string PrefUserId = "Pixygon.UserId";
+        private const string PrefToken = "Pixygon.Token";
+        // Legacy keys we still read once at boot for users upgrading from an
+        // older client. Cleared after successful migration.
+        private const string LegacyPrefRemember = "RememberMe";
+        private const string LegacyPrefUsername = "Username";
+        private const string LegacyPrefPassword = "Password";
+
+        /// <summary>
+        /// Asset ids of games the logged-in account owns. Populated in the
+        /// background after login by <see cref="FetchOwnedGames"/>. Empty
+        /// when not logged in or when the request hasn't completed yet —
+        /// callers should treat absence as "we don't know yet", not "no".
+        /// </summary>
+        public string[] OwnedGameIds { get; private set; } = System.Array.Empty<string>();
+
+        /// <summary>
+        /// True if the logged-in account is known to own the given game.
+        /// False when not logged in, when the owned-games fetch hasn't
+        /// completed, or when the game id genuinely isn't owned.
+        /// </summary>
+        public bool OwnsGame(string gameId) {
+            if (string.IsNullOrEmpty(gameId) || OwnedGameIds == null) return false;
+            for (var i = 0; i < OwnedGameIds.Length; i++) {
+                if (OwnedGameIds[i] == gameId) return true;
+            }
+            return false;
+        }
+
         private async void Awake() {
             if(Instance != null) Destroy(Instance);
             Instance = this;
-            if (PlayerPrefs.GetInt("RememberMe") != 1) return;
+            // Migrate older saves: lift any legacy RememberMe entry into the
+            // new token-based scheme. The legacy entry stored the user's
+            // password — clear it whether or not we end up logged in so it
+            // doesn't sit around on disk.
+            MigrateLegacyRememberMe();
+            if (PlayerPrefs.GetInt(PrefRememberMe) != 1) return;
             IsLoggingIn = true;
-            AccountData = await LogIn(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
-            if (AccountData == null) return;
+            // Try to refresh the cached token. If the token is still valid
+            // the API returns a fresh AccountData and we're logged in without
+            // touching credentials. If the refresh 401s, we silently clear
+            // the cache and surface the login UI as if no session was saved.
+            AccountData = await RefreshSession(PlayerPrefs.GetString(PrefUserId), PlayerPrefs.GetString(PrefToken));
+            IsLoggingIn = false;
+            if (AccountData == null) {
+                ClearRememberMe();
+                return;
+            }
+            IsLoggedIn = true;
+            PersistRememberMe(AccountData);
             SaveManager.SettingsSave._user = AccountData.user;
             SaveManager.SettingsSave._isLoggedIn = true;
             SetLatestActivity("Online", "", "");
+            OnLoginStateChanged?.Invoke();
+            // Owned-games is a background fetch — login UI doesn't block on it.
+            // The fetch itself fires OnLoginStateChanged again when complete.
+            _ = FetchOwnedGames();
+        }
+
+        private void MigrateLegacyRememberMe() {
+            if (PlayerPrefs.GetInt(LegacyPrefRemember) != 1) return;
+            // We can't refresh with a legacy save (we don't have a token), so
+            // just clear it. Next login will use the new scheme.
+            PlayerPrefs.DeleteKey(LegacyPrefRemember);
+            PlayerPrefs.DeleteKey(LegacyPrefUsername);
+            PlayerPrefs.DeleteKey(LegacyPrefPassword);
+            PlayerPrefs.Save();
+        }
+
+        private static void PersistRememberMe(LoginToken token) {
+            if (token == null || token.user == null) return;
+            PlayerPrefs.SetInt(PrefRememberMe, 1);
+            PlayerPrefs.SetString(PrefUserId, token.user._id ?? string.Empty);
+            PlayerPrefs.SetString(PrefToken, token.token ?? string.Empty);
+            PlayerPrefs.Save();
+        }
+
+        private static void ClearRememberMe() {
+            PlayerPrefs.DeleteKey(PrefRememberMe);
+            PlayerPrefs.DeleteKey(PrefUserId);
+            PlayerPrefs.DeleteKey(PrefToken);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// Trade a cached token for a refreshed session. Returns null if the
+        /// token is missing, expired, or revoked — caller should fall back
+        /// to interactive login.
+        /// </summary>
+        private async Task<LoginToken> RefreshSession(string userId, string token) {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token)) return null;
+            var www = await GetWWW($"auth/refresh/{userId}", token);
+            if (!string.IsNullOrWhiteSpace(www.error)) return null;
+            var body = www.downloadHandler.text;
+            if (string.IsNullOrWhiteSpace(body) || body == "null") return null;
+            try {
+                return JsonUtility.FromJson<LoginToken>(body);
+            } catch {
+                return null;
+            }
         }
         private void OnApplicationQuit() {
             SetLatestActivity("Offline", "", "");
         }
         public async void StartLogin(string user, string pass, bool rememberMe = false, Action onLogin = null, Action<ErrorResponse> onFail = null) {
-            if (rememberMe) {
-                PlayerPrefs.SetInt("RememberMe", 1);
-                PlayerPrefs.SetString("Username", user);
-                PlayerPrefs.SetString("Password", pass);
-                PlayerPrefs.Save();
-            }
             AccountData = await LogIn(user, pass, onFail);
             if (AccountData != null) {
                 SaveManager.SettingsSave._user = AccountData.user;
                 SaveManager.SettingsSave._isLoggedIn = true;
+                // Persist only the token after a successful login. We don't
+                // touch the prefs on a failed login so a typo'd password
+                // doesn't blow away the previously-remembered session.
+                if (rememberMe) PersistRememberMe(AccountData);
+                OnLoginStateChanged?.Invoke();
+                // Owned-games fires in the background — the login UI doesn't
+                // block on it, and a slow API response can't stall the boot.
+                _ = FetchOwnedGames();
             }
             onLogin?.Invoke();
         }
         public async void StartSignup(string user, string email, string pass, bool rememberMe = false, Action onSignup = null, Action<ErrorResponse> onFail = null) {
-            if (rememberMe) {
-                PlayerPrefs.SetInt("RememberMe", 1);
-                PlayerPrefs.SetString("Username", user);
-                PlayerPrefs.SetString("Password", pass);
-                PlayerPrefs.Save();
-            }
+            // Signup doesn't auto-login (the user still has to verify their
+            // email), so there's nothing to remember yet. The rememberMe
+            // intent is propagated through the subsequent StartLogin call.
             await Signup(user, email, pass, onFail);
-            /*
-            AccountData = await Signup(user, email, pass, onFail);
-            if (AccountData != null) {
-                SaveManager.SettingsSave._user = AccountData.user;
-                SaveManager.SettingsSave._isLoggedIn = true;
-            }
-            */
             onSignup?.Invoke();
         }
         public static async void VerifyUser(string user, int code, Action onVerify = null, Action<ErrorResponse> onFail = null) {
@@ -115,6 +216,79 @@ namespace Pixygon.Passport {
             var www = await PostWWW($"users/addDreadwagerSkin/{i}", "", true, AccountData.token);
             Debug.Log("Dreadwager Skin Patch: " + www.downloadHandler.text);
         }
+
+        // ---- Owned games & purchases --------------------------------------
+
+        /// <summary>
+        /// Refresh the list of games this account owns. Called automatically
+        /// after a successful login / refresh, but exposed publicly so a
+        /// store flow can invalidate the cache after a purchase completes.
+        /// Safe to invoke when not logged in — no-ops and clears the cache.
+        /// </summary>
+        public async Task FetchOwnedGames() {
+            if (AccountData == null || AccountData.user == null) {
+                OwnedGameIds = System.Array.Empty<string>();
+                return;
+            }
+            var www = await GetWWW($"users/{AccountData.user._id}/ownedGames", AccountData.token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.Log($"[PixygonApi] FetchOwnedGames failed: {www.error}");
+                return;
+            }
+            var body = www.downloadHandler.text;
+            if (string.IsNullOrWhiteSpace(body) || body == "null") {
+                OwnedGameIds = System.Array.Empty<string>();
+                return;
+            }
+            try {
+                // Server returns a raw JSON array of game ids. JsonUtility
+                // can't deserialize a top-level array, so we wrap and unwrap.
+                var wrapped = "{\"ids\":" + body + "}";
+                var holder = JsonUtility.FromJson<OwnedGamesResponse>(wrapped);
+                OwnedGameIds = holder != null && holder.ids != null
+                    ? holder.ids : System.Array.Empty<string>();
+            } catch (Exception e) {
+                Debug.LogWarning($"[PixygonApi] FetchOwnedGames parse failed: {e.Message}; body={body}");
+                OwnedGameIds = System.Array.Empty<string>();
+            }
+            // PaidEdition / other entitlement-aware UI listens here so it
+            // can re-evaluate without polling.
+            OnLoginStateChanged?.Invoke();
+        }
+
+        // ---- Player-authored content (death messages, small wins) ---------
+
+        /// <summary>
+        /// POST an authored death message attributed to the current logged-in
+        /// account. Server ties it to the user's id so the message board can
+        /// show "RIP from {username}". Falls back to anonymous if not
+        /// logged in; the server still accepts the post but won't attribute it.
+        /// </summary>
+        public async void PostDeathMessage(string gameId, string text, Action onPosted = null, Action<ErrorResponse> onFail = null) {
+            var token = AccountData?.token ?? string.Empty;
+            var www = await PostWWW($"{gameId}/deathMessage", JsonUtility.ToJson(new SocialMessage(text)), false, token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
+                return;
+            }
+            onPosted?.Invoke();
+        }
+
+        /// <summary>
+        /// POST a "small win" — a short blurb the player wants to share on the
+        /// in-game message board ("Beat the third boss with only one helper!").
+        /// Server attributes to the logged-in user; anonymous fallback like
+        /// <see cref="PostDeathMessage"/>.
+        /// </summary>
+        public async void PostSmallWin(string gameId, string text, Action onPosted = null, Action<ErrorResponse> onFail = null) {
+            var token = AccountData?.token ?? string.Empty;
+            var www = await PostWWW($"{gameId}/smallWin", JsonUtility.ToJson(new SocialMessage(text)), false, token);
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
+                return;
+            }
+            onPosted?.Invoke();
+        }
         public async void PatchGameXp(int i) {
             Debug.Log("Patching Game XP");
             var www = await PostWWW($"users/gameXp/{i}", "", true, AccountData.token);
@@ -131,15 +305,18 @@ namespace Pixygon.Passport {
             Debug.Log("Patching Viewer XP: " + www.downloadHandler.text);
         }
         public async void DeleteUser(Action onVerify = null, Action<ErrorResponse> onFail = null) {
-            PlayerPrefs.DeleteKey("RememberMe");
-            PlayerPrefs.DeleteKey("Username");
-            PlayerPrefs.DeleteKey("Password");
-            PlayerPrefs.Save();
+            // Capture the token before we clear local state — the previous
+            // version cleared AccountData first and then immediately NRE'd on
+            // AccountData.token. We now snapshot, clear, then fire the
+            // server-side delete with the snapshotted token.
+            var token = AccountData?.token ?? string.Empty;
+            ClearRememberMe();
             SaveManager.SettingsSave._user = null;
             SaveManager.SettingsSave._isLoggedIn = false;
             AccountData = null;
             IsLoggedIn = false;
-            var www = await GetWWW($"users/delete", AccountData.token);
+            OwnedGameIds = System.Array.Empty<string>();
+            var www = await GetWWW($"users/delete", token);
             if (!string.IsNullOrWhiteSpace(www.error)) {
                 onFail?.Invoke(new ErrorResponse(www.error, www.downloadHandler.text));
                 return;
@@ -218,14 +395,13 @@ namespace Pixygon.Passport {
             return "{\"_results\":" + www.downloadHandler.text + "}";
         }
         public void StartLogout() {
-            PlayerPrefs.DeleteKey("RememberMe");
-            PlayerPrefs.DeleteKey("Username");
-            PlayerPrefs.DeleteKey("Password");
-            PlayerPrefs.Save();
+            ClearRememberMe();
             SaveManager.SettingsSave._user = null;
             SaveManager.SettingsSave._isLoggedIn = false;
             AccountData = null;
             IsLoggedIn = false;
+            OwnedGameIds = System.Array.Empty<string>();
+            OnLoginStateChanged?.Invoke();
         }
         public async Task<Savedata> GetSave(string gameId, int slot) {
             var www = await GetWWW($"savedata/{gameId}/{AccountData.user._id}/{slot}", AccountData.token);
@@ -478,6 +654,30 @@ namespace Pixygon.Passport {
             this.bio = bio;
             this.displayName = displayName;
             this.links = links;
+        }
+    }
+
+    /// <summary>
+    /// Wrapper struct used to deserialise a top-level JSON array of owned
+    /// game ids — JsonUtility can't read a top-level array natively, so the
+    /// API response is wrapped client-side as <c>{"ids":[...]}</c>.
+    /// </summary>
+    [Serializable]
+    public class OwnedGamesResponse {
+        public string[] ids;
+    }
+
+    /// <summary>
+    /// Body for player-authored content posts (death messages, small wins).
+    /// Server attributes via the bearer token; only the text comes from the
+    /// payload. Kept generic so future "fun stuff" endpoints can reuse it.
+    /// </summary>
+    [Serializable]
+    public class SocialMessage {
+        public string text;
+
+        public SocialMessage(string text) {
+            this.text = text;
         }
     }
 }
