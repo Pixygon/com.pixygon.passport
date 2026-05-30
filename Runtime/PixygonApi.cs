@@ -100,8 +100,19 @@ namespace Pixygon.Passport
                 PlayerPrefs.GetString(PrefUserId),
                 PlayerPrefs.GetString(PrefRefreshToken));
             IsLoggingIn = false;
-            if (AccountData == null || AccountData.token == null)
+            // Validate the refreshed session. We reject and bail to the
+            // interactive login on any of:
+            //   - null token (server didn't mint one)
+            //   - null user (server returned just a token)
+            //   - empty user._id (response shape mismatch — happens when the
+            //     server serialises as "id" but we expect "_id"; every later
+            //     call would 404 on users//, FetchOwnedGames especially).
+            if (AccountData == null
+                || string.IsNullOrEmpty(AccountData.token)
+                || AccountData.user == null
+                || string.IsNullOrEmpty(AccountData.user._id))
             {
+                Debug.LogWarning("[PixygonApi] Refresh returned an incomplete session — clearing remember-me and surfacing the login screen.");
                 ClearRememberMe();
                 SaveManager.SettingsSave._user = null;
                 SaveManager.SettingsSave._isLoggedIn = false;
@@ -278,7 +289,11 @@ namespace Pixygon.Passport
         /// </summary>
         public async Task FetchOwnedGames()
         {
-            if (AccountData == null || AccountData.user == null)
+            // Skip the fetch entirely if we don't have a usable user id —
+            // would hit /v1/users//ownedGames and 404, polluting logs.
+            if (AccountData == null
+                || AccountData.user == null
+                || string.IsNullOrEmpty(AccountData.user._id))
             {
                 OwnedGameIds = System.Array.Empty<string>();
                 return;

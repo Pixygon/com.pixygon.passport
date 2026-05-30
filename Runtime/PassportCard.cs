@@ -47,16 +47,37 @@ namespace Pixygon.Passport {
             Clear();
             gameObject.SetActive(true);
             _user = null;
+            // Skip the round-trip if we have no id to look up — the server
+            // would just 404 on /v1/users/view/ and the response would
+            // arrive null, NREing inside Set. Show the loading-cleared
+            // state and bail.
+            if (string.IsNullOrEmpty(id)) {
+                _usernameText.text = "No account loaded";
+                return;
+            }
             var user = await PixygonApi.GetUser(id);
             Set(user);
         }
         private void Set(AccountData user) {
             gameObject.SetActive(true);
-            
+
+            // GetUser returns null on 404 / network error. Show a graceful
+            // "not loaded" state instead of NRE'ing on user.displayName.
+            if (user == null) {
+                _usernameText.text = "Could not load profile";
+                _bioText.text = string.Empty;
+                _followersText.text = string.Empty;
+                _levelText.text = "-";
+                _passportStatus.Clear();
+                return;
+            }
+
             _usernameText.text = string.IsNullOrEmpty(user.displayName) ? user.userName : user.displayName;
             _passportStatus.Set(user.latestActivity, user.latestGame);
             _bioText.text = user.bio;
-            _followersText.text = $"{user.followers.Length} Followers";
+            // followers can be null on first read for a brand-new account —
+            // server hasn't initialised the array yet. Treat as 0.
+            _followersText.text = $"{(user.followers != null ? user.followers.Length : 0)} Followers";
             _pfpIcon.GetIcon(user.picturePath, !user.usePfp);
             _user = user;
             CalculateLevels();
