@@ -96,28 +96,40 @@ namespace Pixygon.Passport
             // server can mint a fresh access+refresh pair. If the refresh
             // token is missing, expired, or revoked we silently clear the
             // cache and surface the login UI as if no session was saved.
+            var cachedUserId = PlayerPrefs.GetString(PrefUserId);
+            Debug.Log($"[PixygonApi] Attempting remember-me refresh for userId={cachedUserId}");
             AccountData = await RefreshSession(
-                PlayerPrefs.GetString(PrefUserId),
+                cachedUserId,
                 PlayerPrefs.GetString(PrefRefreshToken));
             IsLoggingIn = false;
-            // Validate the refreshed session. We reject and bail to the
-            // interactive login on any of:
-            //   - null token (server didn't mint one)
-            //   - null user (server returned just a token)
-            //   - empty user._id (response shape mismatch — happens when the
-            //     server serialises as "id" but we expect "_id"; every later
-            //     call would 404 on users//, FetchOwnedGames especially).
-            if (AccountData == null
-                || string.IsNullOrEmpty(AccountData.token)
-                || AccountData.user == null
-                || string.IsNullOrEmpty(AccountData.user._id))
+
+            // The only thing we absolutely need from the refresh response to
+            // call the rest of the API is a non-empty access token. Older
+            // validation also required user._id to be present, but the server's
+            // refresh response can omit fields, and the cached PrefUserId is a
+            // perfectly fine fallback id. Treat any response with a usable
+            // token as a successful refresh, and patch missing user fields
+            // from the cache so subsequent calls don't 404 on users//.
+            if (AccountData == null || string.IsNullOrEmpty(AccountData.token))
             {
-                Debug.LogWarning("[PixygonApi] Refresh returned an incomplete session — clearing remember-me and surfacing the login screen.");
+                Debug.LogWarning("[PixygonApi] Refresh returned no access token — clearing remember-me and showing login.");
                 ClearRememberMe();
                 SaveManager.SettingsSave._user = null;
                 SaveManager.SettingsSave._isLoggedIn = false;
                 AccountData = null;
                 return;
+            }
+            if (AccountData.user == null)
+            {
+                Debug.LogWarning("[PixygonApi] Refresh response missing user record — synthesising minimal user from cached id.");
+                // Fully qualified to disambiguate from this class's
+                // AccountData property of type LoginToken.
+                AccountData.user = new Pixygon.Saving.AccountData { _id = cachedUserId };
+            }
+            else if (string.IsNullOrEmpty(AccountData.user._id) && !string.IsNullOrEmpty(cachedUserId))
+            {
+                Debug.LogWarning("[PixygonApi] Refresh response user._id empty — patching from cached id.");
+                AccountData.user._id = cachedUserId;
             }
             IsLoggedIn = true;
             PersistRememberMe(AccountData);
@@ -141,12 +153,20 @@ namespace Pixygon.Passport
         }
 
         private static void PersistRememberMe(LoginToken token) {
-            if (token == null || token.user == null) return;
+            if (token == null) return;
+            // Don't overwrite stored values with empty strings — the server
+            // may omit a field on a refresh response (e.g. when only the
+            // access token rotates), and overwriting a perfectly-good
+            // cached refresh token with "" would log the user out next boot.
             PlayerPrefs.SetInt(PrefRememberMe, 1);
-            PlayerPrefs.SetString(PrefUserId, token.user._id ?? string.Empty);
-            PlayerPrefs.SetString(PrefToken, token.token ?? string.Empty);
-            PlayerPrefs.SetString(PrefRefreshToken, token.refreshToken ?? string.Empty);
+            if (token.user != null && !string.IsNullOrEmpty(token.user._id))
+                PlayerPrefs.SetString(PrefUserId, token.user._id);
+            if (!string.IsNullOrEmpty(token.token))
+                PlayerPrefs.SetString(PrefToken, token.token);
+            if (!string.IsNullOrEmpty(token.refreshToken))
+                PlayerPrefs.SetString(PrefRefreshToken, token.refreshToken);
             PlayerPrefs.Save();
+            Debug.Log($"[PixygonApi] PersistRememberMe: userId='{PlayerPrefs.GetString(PrefUserId)}' token={(string.IsNullOrEmpty(PlayerPrefs.GetString(PrefToken)) ? "EMPTY" : "set")} refreshToken={(string.IsNullOrEmpty(PlayerPrefs.GetString(PrefRefreshToken)) ? "EMPTY" : "set")}");
         }
 
         private static void ClearRememberMe() {
@@ -165,14 +185,28 @@ namespace Pixygon.Passport
         /// interactive login.
         /// </summary>
         private async Task<LoginToken> RefreshSession(string userId, string refreshToken) {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(refreshToken)) return null;
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(refreshToken)) {
+                Debug.Log("[PixygonApi] RefreshSession skipped: no userId or refreshToken cached.");
+                return null;
+            }
             var www = await GetWWW($"auth/refresh/{userId}", refreshToken);
-            if (!string.IsNullOrWhiteSpace(www.error)) return null;
+            if (!string.IsNullOrWhiteSpace(www.error)) {
+                Debug.LogWarning($"[PixygonApi] RefreshSession HTTP error: {www.error} body={www.downloadHandler?.text}");
+                return null;
+            }
             var body = www.downloadHandler.text;
-            if (string.IsNullOrWhiteSpace(body) || body == "null") return null;
+            if (string.IsNullOrWhiteSpace(body) || body == "null") {
+                Debug.LogWarning("[PixygonApi] RefreshSession returned an empty body.");
+                return null;
+            }
             try {
-                return JsonUtility.FromJson<LoginToken>(body);
-            } catch {
+                var parsed = JsonUtility.FromJson<LoginToken>(body);
+                // One-line truth check so the next time remember-me misbehaves
+                // it's obvious what the server sent vs. what we deserialised.
+                Debug.Log($"[PixygonApi] RefreshSession parsed: token={(string.IsNullOrEmpty(parsed?.token) ? "EMPTY" : "set")} refreshToken={(string.IsNullOrEmpty(parsed?.refreshToken) ? "EMPTY" : "set")} user._id={(parsed?.user != null ? parsed.user._id : "(null user)")}");
+                return parsed;
+            } catch (Exception e) {
+                Debug.LogError($"[PixygonApi] RefreshSession parse failed: {e.Message}; body={body}");
                 return null;
             }
         }
