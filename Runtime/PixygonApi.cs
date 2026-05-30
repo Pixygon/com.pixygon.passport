@@ -10,7 +10,7 @@ namespace Pixygon.Passport
     {
         // Production API. If we ever need a staging swap, this is the single
         // line to touch.
-        private const string PixygonServerURL = "https://api.pixygon.io/v1/";
+        private const string PixygonServerURL = "https://api.pixygon.com/v1/";
         public bool IsLoggedIn { get; private set; }
         public bool IsLoggingIn { get; private set; }
         public LoginToken AccountData { get; private set; }
@@ -27,11 +27,15 @@ namespace Pixygon.Passport
         // Remember-me prefs keys. We previously stored the user's password
         // in PlayerPrefs — that's both a security smell and a fragile coupling
         // to "the password the user typed once". We now persist the JWT-style
-        // token + userId and rehydrate the session by refreshing the token,
-        // not by re-logging in with the password.
+        // access token + refresh token + userId and rehydrate the session by
+        // refreshing the token, not by re-logging in with the password.
+        // The access token expires in ~7 days and is sent on every API call;
+        // the refresh token expires in ~30 days and is only sent to
+        // /auth/refresh to mint a new access token + refresh token pair.
         private const string PrefRememberMe = "Pixygon.RememberMe";
         private const string PrefUserId = "Pixygon.UserId";
         private const string PrefToken = "Pixygon.Token";
+        private const string PrefRefreshToken = "Pixygon.RefreshToken";
         // Legacy keys we still read once at boot for users upgrading from an
         // older client. Cleared after successful migration.
         private const string LegacyPrefRemember = "RememberMe";
@@ -63,8 +67,22 @@ namespace Pixygon.Passport
 
         private async void Awake()
         {
-            if (Instance != null) Destroy(Instance);
+            // Correct singleton: when a fresh scene instantiates its own
+            // PixygonApi MonoBehaviour but the persistent Instance already
+            // exists, kill the *new* one and bail. The previous code did
+            // `Destroy(Instance)` which threw away the authenticated, in-
+            // memory AccountData and re-ran the whole token-refresh on
+            // every scene load — so a user without "Remember me" checked
+            // appeared logged out the moment they returned to the Hub.
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
+            // Survive scene transitions so AccountData / OwnedGameIds / the
+            // OnLoginStateChanged subscribers all persist Menu → Hub → Game → Hub.
+            DontDestroyOnLoad(gameObject);
             // Migrate older saves: lift any legacy RememberMe entry into the
             // new token-based scheme. The legacy entry stored the user's
             // password — clear it whether or not we end up logged in so it
@@ -72,11 +90,15 @@ namespace Pixygon.Passport
             MigrateLegacyRememberMe();
             if (PlayerPrefs.GetInt(PrefRememberMe) != 1) return;
             IsLoggingIn = true;
-            // Try to refresh the cached token. If the token is still valid
-            // the API returns a fresh AccountData and we're logged in without
-            // touching credentials. If the refresh 401s, we silently clear
-            // the cache and surface the login UI as if no session was saved.
-            AccountData = await RefreshSession(PlayerPrefs.GetString(PrefUserId), PlayerPrefs.GetString(PrefToken));
+            // Try to refresh the cached session. We pass the REFRESH token
+            // (not the access token) — the spec for /auth/refresh is to send
+            // the longer-lived refresh token in the bearer header so the
+            // server can mint a fresh access+refresh pair. If the refresh
+            // token is missing, expired, or revoked we silently clear the
+            // cache and surface the login UI as if no session was saved.
+            AccountData = await RefreshSession(
+                PlayerPrefs.GetString(PrefUserId),
+                PlayerPrefs.GetString(PrefRefreshToken));
             IsLoggingIn = false;
             if (AccountData == null || AccountData.token == null)
             {
@@ -112,6 +134,7 @@ namespace Pixygon.Passport
             PlayerPrefs.SetInt(PrefRememberMe, 1);
             PlayerPrefs.SetString(PrefUserId, token.user._id ?? string.Empty);
             PlayerPrefs.SetString(PrefToken, token.token ?? string.Empty);
+            PlayerPrefs.SetString(PrefRefreshToken, token.refreshToken ?? string.Empty);
             PlayerPrefs.Save();
         }
 
@@ -119,17 +142,20 @@ namespace Pixygon.Passport
             PlayerPrefs.DeleteKey(PrefRememberMe);
             PlayerPrefs.DeleteKey(PrefUserId);
             PlayerPrefs.DeleteKey(PrefToken);
+            PlayerPrefs.DeleteKey(PrefRefreshToken);
             PlayerPrefs.Save();
         }
 
         /// <summary>
-        /// Trade a cached token for a refreshed session. Returns null if the
-        /// token is missing, expired, or revoked — caller should fall back
-        /// to interactive login.
+        /// Trade a cached refresh token for a fresh access + refresh pair.
+        /// The server expects the refresh token in the Authorization header
+        /// (not the access token). Returns null if the refresh token is
+        /// missing, expired, or revoked — caller should fall back to
+        /// interactive login.
         /// </summary>
-        private async Task<LoginToken> RefreshSession(string userId, string token) {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token)) return null;
-            var www = await GetWWW($"auth/refresh/{userId}", token);
+        private async Task<LoginToken> RefreshSession(string userId, string refreshToken) {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(refreshToken)) return null;
+            var www = await GetWWW($"auth/refresh/{userId}", refreshToken);
             if (!string.IsNullOrWhiteSpace(www.error)) return null;
             var body = www.downloadHandler.text;
             if (string.IsNullOrWhiteSpace(body) || body == "null") return null;
@@ -714,8 +740,14 @@ namespace Pixygon.Passport
     [Serializable]
     public class LoginToken
     {
+        /// <summary>Authenticated user record, returned by /auth/login and /auth/refresh.</summary>
         public AccountData user;
+        /// <summary>7-day JWT access token. Sent on every authenticated API call as the bearer token.</summary>
         public string token;
+        /// <summary>30-day JWT refresh token. Sent ONLY to /auth/refresh to mint a new access+refresh pair.</summary>
+        public string refreshToken;
+        /// <summary>Lifetime of <see cref="token"/> in seconds (~604800 for 7 days). Used for proactive refresh scheduling if needed.</summary>
+        public int expiresIn;
     }
     [Serializable]
     public class Feedback

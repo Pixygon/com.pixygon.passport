@@ -95,7 +95,7 @@ namespace Pixygon.Passport {
         public void Login(string user, string pass, bool rememberMe) {
             PixygonApi.Instance.StartLogin(user, pass, rememberMe, LoginComplete,
                 s => {
-                    _accountErrors.SetErrorMessage("Login Failed", s, StartLogin);
+                    _accountErrors.ShowError(LoginErrorContext.Login, s, StartLogin);
                     SetError();
                 });
             _loginLoadingScreen.SetActive(true);
@@ -113,7 +113,7 @@ namespace Pixygon.Passport {
         public void Signup(string user, string email, string pass, bool rememberMe) {
             PixygonApi.Instance.StartSignup(user, email, pass,
                 rememberMe, SignupComplete, s => {
-                    _accountErrors.SetErrorMessage("Signup Failed", s, StartRegister);
+                    _accountErrors.ShowError(LoginErrorContext.Signup, s, StartRegister);
                     SetError();
                 });
             _currentUser = user;
@@ -128,7 +128,7 @@ namespace Pixygon.Passport {
         public void OnVerify(string code) {
             PixygonApi.VerifyUser(_currentUser, int.Parse(code),
                 VerificationComplete, s => {
-                    _accountErrors.SetErrorMessage("Verification Failed", s, SignupComplete);
+                    _accountErrors.ShowError(LoginErrorContext.Verification, s, SignupComplete);
                     SetError();
                 });
             _loginLoadingScreen.SetActive(true);
@@ -155,7 +155,8 @@ namespace Pixygon.Passport {
         public void OnResetPassword(string email) {
             _currentEmail = email;
             PixygonApi.ForgotPassword(email, ResetPasswordComplete, s => {
-                _accountErrors.SetErrorMessage("Recovery Failed", s, () => { _forgotPasswordRequestPanel.ActivateScreen(true); });
+                _accountErrors.ShowError(LoginErrorContext.PasswordRecovery, s,
+                    () => { _forgotPasswordRequestPanel.ActivateScreen(true); });
                 SetError();
             });
             _loginLoadingScreen.SetActive(true);
@@ -169,7 +170,7 @@ namespace Pixygon.Passport {
         public void OnSendResetPassword(string hash, string newPass) {
             PixygonApi.ForgotPasswordRecovery(_currentEmail, hash, newPass, NewPasswordSet,
                 s => {
-                    _accountErrors.SetErrorMessage("Recovery Failed", s,
+                    _accountErrors.ShowError(LoginErrorContext.PasswordRecovery, s,
                         () => { _resetPasswordPanel.ActivateScreen(true); });
                     SetError();
                 });
@@ -186,7 +187,11 @@ namespace Pixygon.Passport {
         public void OnDeleteAccount() {
             PixygonApi.Instance.DeleteUser(DeletionComplete,
                 s => {
-                    _accountErrors.SetErrorMessage("Recovery Failed", s,
+                    // Account delete shares the password-recovery context
+                    // bucket — both surface as "we couldn't perform that
+                    // sensitive account action right now". A dedicated
+                    // AccountAction context could be added later if needed.
+                    _accountErrors.ShowError(LoginErrorContext.PasswordRecovery, s,
                         () => { });
                     SetError();
                 });
