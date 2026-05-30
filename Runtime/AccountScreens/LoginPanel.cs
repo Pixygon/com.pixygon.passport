@@ -1,10 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
+using UnityEngine.UI;
 
 namespace Pixygon.Passport {
     public class LoginPanel : AccountPanel {
@@ -104,21 +102,17 @@ namespace Pixygon.Passport {
         }
 
         /// <summary>
-        /// Returns true if Tab was pressed this frame, regardless of which
-        /// input-handling stack the consumer project is using. Unity 6
-        /// projects can have either the legacy Input Manager, the new
-        /// Input System Package, or both enabled simultaneously; we check
-        /// whichever ones the project compiled with.
+        /// Returns true if Tab was pressed this frame. Uses the new Input
+        /// System Package — the asmdef references <c>Unity.InputSystem</c>
+        /// and the package.json declares it as a dependency, so consumers
+        /// can rely on it being available. <see cref="Keyboard.current"/>
+        /// is null on devices with no keyboard at all (mobile builds with
+        /// no Bluetooth keyboard attached); the null guard keeps the call
+        /// safe in those cases.
         /// </summary>
         private static bool TabPressedThisFrame() {
-#if ENABLE_INPUT_SYSTEM
             var kb = Keyboard.current;
-            if (kb != null && kb.tabKey.wasPressedThisFrame) return true;
-#endif
-#if ENABLE_LEGACY_INPUT_MANAGER
-            if (Input.GetKeyDown(KeyCode.Tab)) return true;
-#endif
-            return false;
+            return kb != null && kb.tabKey.wasPressedThisFrame;
         }
 
     }

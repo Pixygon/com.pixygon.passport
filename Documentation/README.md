@@ -500,6 +500,7 @@ await PixygonApi.Instance.FetchOwnedGames();
 |---|---|---|
 | `com.pixygon.saving` | Hard | `SaveManager.SettingsSave._user` is the cross-package handoff for the signed-in account. |
 | `com.pixygon.nft` | Hard (legacy) | Wallet-patch endpoints + ItemBox helpers still live here. Will be split out in a future release. |
+| `com.unity.inputsystem` | Hard | `LoginPanel` Tab navigation reads `Keyboard.current` from the new Input System. Projects must have **Active Input Handling** set to "Input System Package (New)" or "Both". |
 | `UnityEngine.Networking` | Built-in | All HTTP via `UnityWebRequest`. WebSockets not used. |
 | TextMeshPro | Built-in | Account screen text. |
 
