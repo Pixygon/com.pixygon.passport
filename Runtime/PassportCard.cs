@@ -112,20 +112,27 @@ namespace Pixygon.Passport {
         }
 
         private void CheckIfFollowing() {
-            if (_user._id == PixygonApi.Instance.AccountData.user._id) {
+            // Defensive: nothing useful to render if we're not signed in or
+            // PixygonApi hasn't booted yet. Hide all three follow buttons.
+            var me = PixygonApi.Instance?.AccountData?.user;
+            if (me == null) {
+                _unfollowBtn.SetActive(false);
+                _followBtn.SetActive(false);
+                _followLoading.SetActive(false);
+                return;
+            }
+            if (_user._id == me._id) {
                 _unfollowBtn.SetActive(false);
                 _followBtn.SetActive(false);
                 _followLoading.SetActive(false);
                 return;
             }
             _followLoading.SetActive(true);
-            if (PixygonApi.Instance.AccountData.user.following != null) {
-                if (PixygonApi.Instance.AccountData.user.following.Any(s => s == _user._id)) {
-                    _unfollowBtn.SetActive(true);
-                    _followBtn.SetActive(false);
-                    _followLoading.SetActive(false);
-                    return;
-                }
+            if (me.following != null && me.following.Any(s => s == _user._id)) {
+                _unfollowBtn.SetActive(true);
+                _followBtn.SetActive(false);
+                _followLoading.SetActive(false);
+                return;
             }
             _unfollowBtn.SetActive(false);
             _followBtn.SetActive(true);
@@ -145,7 +152,10 @@ namespace Pixygon.Passport {
         public async void OnUnfollow() {
             _unfollowBtn.SetActive(false);
             _followLoading.SetActive(true);
-            await PixygonApi.Instance.FollowUser(_user._id);
+            // Was calling FollowUser (re-followed the user instead of
+            // unfollowing). PixygonApi now exposes a dedicated UnfollowUser
+            // that hits PATCH /v1/users/unfollow/{followId}.
+            await PixygonApi.Instance.UnfollowUser(_user._id);
             GetUser(_user._id);
         }
     }

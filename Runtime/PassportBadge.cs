@@ -16,21 +16,26 @@ namespace Pixygon.Passport
         private bool _open = true;
         private bool _isOver;
         public void Set() {
-            if (!PixygonApi.Instance.IsLoggedIn) {
+            // PixygonApi.Instance can be null briefly during scene boot order
+            // — render as logged-out in that case rather than NRE.
+            var api = PixygonApi.Instance;
+            var loggedIn = api != null && api.IsLoggedIn
+                           && api.AccountData != null && api.AccountData.user != null;
+            if (!loggedIn) {
                 _usernameText.text = "Not logged in!";
                 _profilePic.ClearIcon();
                 _passportStatus.Clear();
             } else {
-                _usernameText.text = string.IsNullOrEmpty(PixygonApi.Instance.AccountData.user.displayName)
-                    ? PixygonApi.Instance.AccountData.user.userName
-                    : PixygonApi.Instance.AccountData.user.displayName;
-                _profilePic.GetIcon(PixygonApi.Instance.AccountData.user.picturePath);
-                _passportStatus.Set(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
-                //GetGame(PixygonApi.Instance.AccountData.user.latestActivity, PixygonApi.Instance.AccountData.user.latestGame);
+                var u = api.AccountData.user;
+                _usernameText.text = string.IsNullOrEmpty(u.displayName) ? u.userName : u.displayName;
+                _profilePic.GetIcon(u.picturePath);
+                _passportStatus.Set(u.latestActivity, u.latestGame);
             }
             _openTimer = 5f;
             _open = true;
-            GetComponent<Animator>().SetBool("Open", true);
+            // Animator is optional — designer may have removed it. Don't
+            // NRE if it isn't present.
+            if (TryGetComponent<Animator>(out var anim)) anim.SetBool("Open", true);
         }
 
         /*
@@ -52,26 +57,28 @@ namespace Pixygon.Passport
                     _openTimer -= Time.deltaTime;
                 else {
                     _open = false;
-                    GetComponent<Animator>().SetBool("Open", false);
+                    if (TryGetComponent<Animator>(out var anim)) anim.SetBool("Open", false);
                 }
-            }            
+            }
         }
         public void OnPointerEnter(PointerEventData eventData) {
             _isOver = true;
             _openTimer = 5f;
             _open = true;
-            GetComponent<Animator>().SetBool("Open", true);
+            if (TryGetComponent<Animator>(out var anim)) anim.SetBool("Open", true);
         }
         public void OnPointerExit(PointerEventData eventData) {
             _isOver = false;
         }
 
         public void OnClick() {
-            Debug.Log("Clicked on Passport Badge!");
-            if (!PixygonApi.Instance.IsLoggedIn)
+            // PixygonApi.Instance can be null if the badge fires before the
+            // singleton's Awake on a fresh boot — treat as logged-out.
+            var api = PixygonApi.Instance;
+            if (api == null || !api.IsLoggedIn)
                 _accountUi?.StartLogin();
             else
-                _passportCard?.GetUser(PixygonApi.Instance.AccountData.user._id);
+                _passportCard?.GetUser(api.AccountData?.user?._id);
         }
     }
 }

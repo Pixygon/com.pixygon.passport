@@ -31,6 +31,11 @@ namespace Pixygon.Passport {
         }
         
         private async void DoStartUpLogin() {
+            // PixygonApi.Instance can briefly be null if this AccountUI lives
+            // in a scene that loads before the PixygonApi singleton (rare
+            // but happens when a consumer scene is opened directly in the
+            // editor for testing). Wait it out, then proceed normally.
+            while (PixygonApi.Instance == null) await Task.Yield();
             while (PixygonApi.Instance.IsLoggingIn || LoginState == LoginState.Signup || LoginState == LoginState.Validate) await Task.Yield();
             if (PixygonApi.Instance.IsLoggedIn)
                 CloseAccountScreen();
