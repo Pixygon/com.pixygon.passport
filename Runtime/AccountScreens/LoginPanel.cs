@@ -69,6 +69,13 @@ namespace Pixygon.Passport {
 
         private void Update() {
             if (!gameObject.activeInHierarchy) return;
+            // Enter/Return submits the form — same as clicking "Log in". Guard against
+            // re-firing while a submit is already in flight (the button goes
+            // non-interactable in Login()), so a held Enter can't queue two POSTs.
+            if (SubmitPressedThisFrame()) {
+                if (_loginButton == null || _loginButton.interactable) Login();
+                return;
+            }
             if (!TabPressedThisFrame()) return;
             // With only two text fields, Tab and Shift+Tab do the same
             // thing — swap focus. (Adding more fields would warrant a
@@ -113,6 +120,12 @@ namespace Pixygon.Passport {
         private static bool TabPressedThisFrame() {
             var kb = Keyboard.current;
             return kb != null && kb.tabKey.wasPressedThisFrame;
+        }
+
+        /// <summary>True if Enter/Return (main or numpad) was pressed this frame.</summary>
+        private static bool SubmitPressedThisFrame() {
+            var kb = Keyboard.current;
+            return kb != null && (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame);
         }
 
     }
