@@ -1,34 +1,27 @@
-using Pixygon.Ipfs;
 using UnityEngine;
 
 namespace Pixygon.Passport {
+    /// <summary>
+    /// Profile-picture loader. The old implementation streamed the image from IPFS
+    /// (Pixygon.Ipfs, via the retired nft package). That stack is gone; this is now a
+    /// no-op placeholder that preserves the GetIcon/ClearIcon API so PassportCard and
+    /// PassportBadge compile unchanged. Wire the replacement media pipeline in here.
+    /// </summary>
     public class IconGetter : MonoBehaviour {
         [SerializeField] private Transform _parent;
         [SerializeField] private GameObject _loadObject;
         [SerializeField] private GameObject _defaultIcon;
         [SerializeField] private GameObject _spritebase;
-        private GameObject _go;
-        
-        public async void GetIcon(string hash, bool useDefault = false) {
-            ClearIcon();
-            _defaultIcon.SetActive(useDefault);
-            if (useDefault) {
-                _loadObject.SetActive(false);
-                return;
-            }
-            _loadObject.SetActive(true);
-            _go = Instantiate(_spritebase, _parent);
-            await _go.GetComponent<IpfsConstructor>().ConstructIpfsObject(hash);
-            if (this == null) {
-                return;
-            }
 
-            _loadObject.SetActive(false);
+        public void GetIcon(string hash, bool useDefault = false) {
+            // IPFS image streaming removed with the nft/ipfs packages. Until the
+            // replacement media system exists, show the default icon.
+            if (_loadObject != null) _loadObject.SetActive(false);
+            if (_defaultIcon != null) _defaultIcon.SetActive(true);
         }
+
         public void ClearIcon() {
-            _loadObject.SetActive(false);
-            if(_go != null)
-                Destroy(_go);
+            if (_loadObject != null) _loadObject.SetActive(false);
         }
     }
 }
